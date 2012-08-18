@@ -5,7 +5,11 @@
 		</title>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 		<script src="https://github.com/andyet/ICanHaz.js/raw/master/ICanHaz.min.js"></script>
+		<script src="/static/js/OpenLayers.js"></script>
+        <script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
+        <script src="https://raw.github.com/cowboy/jquery-hashchange/v1.3/jquery.ba-hashchange.js"></script>
 		<style>
+		@import url(/static/css/theme/default/img/style.css);
 		@import url(http://fonts.googleapis.com/css?family=Josefin+Sans:700);
 			body{
 				margin:0 0 0 0;
@@ -21,10 +25,26 @@
 			
 			.main_title{
 				display:inline-block;
+				top: -6px;
+				position: relative;
+				left: 8px;
+			}
+			
+			.area_title{
+				display:inline-block;
+				top: -6px;
+				position: relative;
+				left: 30px;
+				color: #DDD;
 			}
 			
 			#map{
 				width:100%;
+			}
+			#controls {
+				/*position:absolute;
+				top:50px;
+				width:100%;*/
 			}
 			
 			footer{
@@ -38,26 +58,67 @@
 			}
 		</style>
 		<script>
+			function createBB(viewport){
+				return [viewport.southwest.lng, viewport.southwest.lat,viewport.northeast.lng, viewport.northeast.lat];
+			}
+		
 			VC = {};
 			VC.refresh = function(){
 				$('#map').height($(window).height()-$('header').height()-$('footer').height()-1);
+				//$('#controls').height($(window).height()-$('header').height()-$('footer').height()-1);
 			}
 			$(window).resize(VC.refresh);
+			$(window).hashchange(function(){
+				var loc = location.hash.split('#')[1];
+				var op = loc.split(':');
+				switch (op[0]){
+					case "goto":
+						$.getJSON('/extra/maps.googleapis.com/maps/api/geocode/json?sensor=false&address='+op[1], function(data){
+							VC.map.zoomToExtent(createBB(data.results[0].geometry.viewport));
+						})
+						break;
+					default: break;
+				}
+			});
 			
 			$(function(){
 				VC.refresh();
+				$(window).hashchange();
+				VC.map = new OpenLayers.Map( 'map', {controls:[]});
+				VC.map.addControl(new OpenLayers.Control.Navigation());
+				VC.map.addControl(new OpenLayers.Control.Zoom());
+				VC.map.addControl(new OpenLayers.Control.DragPan());
+				VC.map.addControl(new OpenLayers.Control.LayerSwitcher());
+    
+			    var gmap = new OpenLayers.Layer.Google(
+			        "Google Streets", // the default
+			        {numZoomLevels: 20}
+			    );
+			    var ghyb = new OpenLayers.Layer.Google(
+			        "Google Hybrid",
+			        {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20}
+			    );
+			    var gsat = new OpenLayers.Layer.Google(
+			        "Google Satellite",
+			        {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 20}
+			    );
+			    VC.map.addLayers([gsat, gmap, ghyb]);
+			    VC.map.setZoomLeve(3);
+				 
 			});
 		</script>
 	</head>
 	<body>
 		<header>
-			<span class="main_title">VivaCity</span> - <span class="area_title"></span>
+			<span class="main_title">VivaCity</span><span class="area_title">Bologna</span>
 		</header>
 		<div id="map">
 			
 		</div>
 		<div id="controls">
-			
+			<div id="nav_ctrl"></div>
+			<div id="btm_ctrl"></div>
+			<div id="interest"></div>
 		</div>
 		<footer>
 			&copy; 2012 MMo.IT
