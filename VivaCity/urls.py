@@ -8,7 +8,7 @@ urlpatterns = patterns('',
 
     # main page
     url(r'^$', 'ui.views.index', name='home'),
-    url(r'^external/(?P<path>.*)$', 'interface.views.proxy', name="proxy"),
+    url(r'^external/(?P<path>.*)$', 'ui.views.proxy', name="proxy"),
 
     #data urls
     url(r'^data/instances/(?P<id>\d+)$', 'postdoc.views.http_get_instance'),

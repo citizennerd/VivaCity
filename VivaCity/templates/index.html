@@ -68,7 +68,7 @@
 				height:500px;
 				background-color:blue;
 			}
-			#int_ctrl .btn{
+			#int_ctrl>.btn{
 				position:relative;
 				margin-top:20px;
 				width:60px;
@@ -118,15 +118,28 @@
 			}
 		</style>
 		<script>
+			VC = {};
+			
+			VC.projections ={};
+			VC.projections.google = new OpenLayers.Projection("EPSG:900913");
+			VC.projections.wgs84 = new OpenLayers.Projection("EPSG:4326");
+			
 			function createBB(viewport) {
-				return [viewport.southwest.lng, viewport.southwest.lat, viewport.northeast.lng, viewport.northeast.lat];
+				var bb = new OpenLayers.Bounds();
+				bb.extend(new OpenLayers.LonLat(viewport.southwest.lng, viewport.southwest.lat).transform(VC.projections.wgs84, VC.projections.google));
+				bb.extend(new OpenLayers.LonLat(viewport.northeast.lng, viewport.northeast.lat).transform(VC.projections.wgs84, VC.projections.google));
+				return bb;
 			}
 
-			VC = {};
+			
 			VC.refresh = function() {
 				$('#map').height($(window).height() - $('header').height() - $('footer').height() - 1);
 				$('#int_ctrl').height($(window).height()-$('header').height()-$('footer').height()-$('#nav_ctrl').height()-1);
 			}
+			VC.projections ={};
+			VC.projections.google = new OpenLayers.Projection("EPSG:900913");
+			VC.projections.wgs84 = new OpenLayers.Projection("EPSG:4326");
+
 			$(window).resize(VC.refresh);
 			$(window).hashchange(function() {
 				if (location.hash) {
@@ -136,6 +149,7 @@
 						case "goto":
 							$.getJSON('/external/maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + op[1], function(data) {
 								VC.map.zoomToExtent(createBB(data.results[0].geometry.viewport));
+								$('.area_title').text(data.results[0].address_components[0].long_name);
 							})
 							break;
 						default:
@@ -168,7 +182,8 @@
 				VC.refresh();
 				$(window).hashchange();
 				VC.map = new OpenLayers.Map('map', {
-					controls : []
+					controls : [],
+					theme:null
 				});
 				VC.map.addControl(new OpenLayers.Control.Navigation());
 				VC.map.addControl(new OpenLayers.Control.Zoom());
@@ -188,7 +203,7 @@
 					numZoomLevels : 20
 				});
 				VC.map.addLayers([gsat, gmap, ghyb]);
-				VC.map.setZoomLevel(3);
+				VC.map.zoomTo(3);
 
 			});
 		</script>
@@ -208,9 +223,20 @@
 			</div>
 			<div id="btm_ctrl" class="cmd_bar"> </div>
 			<div id="int_ctrl" class="cmd_bar">
-				<div id="env" class="btn"> </div> 
-				<div id="env" class="btn"> </div> 
-				<div id="env" class="btn"> </div> 
+				<div id="env" class="btn">
+					<div id="env" class="btn"> </div>
+					<div id="env" class="btn"> </div>
+					<div id="env" class="btn"> </div>
+				</div> 
+				<div id="env" class="btn"> 
+					<div id="env" class="btn"> </div>
+				</div> 
+				<div id="env" class="btn">
+					<div id="env" class="btn"> </div>
+					<div id="env" class="btn"> </div>
+					<div id="env" class="btn"> </div>
+					<div id="env" class="btn"> </div> 
+				</div> 
 				<div id="env" class="btn erg"> </div> 
 			</div>
 			<div id="hide_all" class="hide_btn"></div> 
