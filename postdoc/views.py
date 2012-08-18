@@ -92,4 +92,4 @@ def http_get_visible_models(request):
 
 def http_get_visible_instances(request):
     return HttpResponse(json.dumps(get_visible_instances()), content_type="text/json")
-            
+
