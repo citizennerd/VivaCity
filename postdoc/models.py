@@ -7,7 +7,7 @@ class DataModel(models.Model):
     is_base = models.BooleanField(default=False)
     geo_representation = models.CharField(max_length=100, blank=True, null=True)
     abstract = models.BooleanField(default=False)
-    
+    container = models.ForeignKey('DataModel', blank=True, null=True, related_name="contains")
     def __str__(self):
         return self.name
     
