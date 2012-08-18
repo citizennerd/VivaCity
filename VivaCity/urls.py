@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^data/models/visible$', 'postdoc.views.http_get_visible_models'),
 
     #semantics urls
+    url(r'^semantics/fetch/(?P<id>\d+)$', 'semanticizer.views.fetch_data', name="fetch"),
     url(r'^semantics/add/step_1$', 'semanticizer.views.step_1', name="step_1"),
     url(r'^semantics/add/step_2$', 'semanticizer.views.step_2', name="step_2"),
     url(r'^semantics/add/step_3$', 'semanticizer.views.step_3', name="step_3"),

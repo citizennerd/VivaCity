@@ -31,7 +31,7 @@ class DataModelAttribute(models.Model):
     data_type = models.ForeignKey(DataModel)
     
     def __str__(self):
-        return self.name
+        return "%s:%s" % (self.model.name, self.name, )
     
 class DataInstance(models.Model):
     data_type = models.ForeignKey(DataModel, related_name = "instances")
@@ -44,5 +44,7 @@ class DataInstanceAttribute(models.Model):
     instance = models.ForeignKey(DataInstance, related_name="attributes")
     attribute = models.ForeignKey(DataModelAttribute)
     value = models.TextField()
+    def __str__(self):
+        return "%s.%s = %s" % (self.instance, self.attribute.name, self.value )
     
     

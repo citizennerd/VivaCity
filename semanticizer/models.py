@@ -12,7 +12,7 @@ class DataSetFormat(models.Model):
     
 class DataSet(models.Model):
     file = models.URLField()
-    format = models.ForeignKey(DataSetImportMethod)
+    format = models.ForeignKey(DataSetFormat)
     format_configuration = models.TextField()
     refresh_period = models.TextField()
     def __str__(self):

@@ -122,6 +122,7 @@ INSTALLED_APPS = (
     "django_forms_bootstrap",
     
     'postdoc',
+    'semanticizer',
 )
 
 # A sample logging configuration. The only tangible logging

@@ -10,8 +10,8 @@ def get_instance_json(instance_id):
     jdi['id'] = di.id
     jdi['data_type'] = di.data_type.name
     jdi['data_type_id'] = di.data_type.id
-    if di.geometry is not None and di.geometry != "":
-        jdi['geometry'] = di.geometry.geojson(); 
+    #if di.geometry is not None and di.geometry != "":
+    #    jdi['geometry'] = di.geometry.geojson(); 
     jdi['attributes'] = []
     for attribute in di.attributes.all():
         jdia = {}
@@ -19,7 +19,7 @@ def get_instance_json(instance_id):
         jdia['name'] = attribute.attribute.name
         jdia['data_type'] = attribute.attribute.data_type.name
         jdia['data_type_id'] = attribute.attribute.data_type.id
-        jdia['value'] = attribute.attribute.value
+        jdia['value'] = attribute.value
         jdi['attributes'].append(jdia)
     return jdi
     
@@ -42,7 +42,6 @@ def get_data_json(datamodel_id):
         jdm['contains'].append(jdmc)
     jdm['is_base'] = dm.is_base
     jdm['geo_representation'] = dm.geo_representation
-    jdm['abstract'] = dm.abstract
     jdm['attributes'] = []
     for attribute in dm.attributes.all():
         jdma = {}
@@ -51,6 +50,11 @@ def get_data_json(datamodel_id):
         jdma['data_type'] = attribute.data_type.name
         jdma['data_type_id'] = attribute.data_type.id
         jdm['attributes'].append(jdma)
+    jdm['tags']= []
+    for tag in dm.tags.all():
+        jdmt = {}
+        jdmt['name'] = tag.tag.name
+        jdm['tags'].append(jdmt)
     
     return jdm
 
