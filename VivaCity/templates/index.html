@@ -134,7 +134,7 @@
 					var op = loc.split(':');
 					switch (op[0]) {
 						case "goto":
-							$.getJSON('/extra/maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + op[1], function(data) {
+							$.getJSON('/external/maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + op[1], function(data) {
 								VC.map.zoomToExtent(createBB(data.results[0].geometry.viewport));
 							})
 							break;
