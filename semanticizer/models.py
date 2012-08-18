@@ -18,7 +18,7 @@ class DataSet(models.Model):
         return self.file    
     
 class Semantics(models.Model):
-    dataset = models.ForeignKey(DataSet, related_name="semantic")
+    dataset = models.ForeignKey(DataSet, related_name="semantics")
     data_model = models.ForeignKey(DataModel)
     def __str__(self):
         return "%s => %s" % (self.dataset.file, self.data_model.name)    
