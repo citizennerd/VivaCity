@@ -9,8 +9,8 @@ urlpatterns = patterns('',
     url(r'^$', 'ui.views.index', name='home'),
 
     #data urls
-    url(r'^data/instances/(?<id>\d+)$', 'postdoc.views.http_get_instance'),
-    url(r'^data/models/(?<id>\d+)$', 'postdoc.views.http_get_data'),
+    url(r'^data/instances/(?P<id>\d+)$', 'postdoc.views.http_get_instance'),
+    url(r'^data/models/(?P<id>\d+)$', 'postdoc.views.http_get_data'),
     
     url(r'^data/instances/visible$', 'postdoc.views.http_get_visible_instances'),
     url(r'^data/models/visible$', 'postdoc.views.http_get_visible_models'),
