@@ -39,6 +39,7 @@ def get_data_json(datamodel_id):
             jdmc = {}
             jdmc['data_type'] = containee.name
             jdmc['data_type_id'] = containee.id
+        jdm['contains'].append(jdmc)
     jdm['is_base'] = dm.is_base
     jdm['geo_representation'] = dm.geo_representation
     jdm['abstract'] = dm.abstract
@@ -59,7 +60,14 @@ def get_visible_models():
     for tldm in tldms:
         dms.append({"name":tldm.name, "id":tldm.id, 'url':""})
     return dms
-        
+
+def get_adminsitrative_instances():
+    tldmis = DataModelInstance.objects.filter(data_type__container__isnull=True)
+    dmis = []
+    for tldmi in tldmis:
+        dmis.append({'id':tldmi.id, 'geometry':tldmi.geometry.geojson, 'url':""})
+    return dmis
+    
     
 def get_visible_instances():
     tldmis = DataModelInstance.objects.filter(data_type__container__isnull=True)

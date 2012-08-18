@@ -6,8 +6,8 @@ class DataModel(models.Model):
     super = models.ForeignKey('DataModel', blank=True, null=True)
     is_base = models.BooleanField(default=False)
     geo_representation = models.CharField(max_length=100, blank=True, null=True)
-    abstract = models.BooleanField(default=False)
     container = models.ForeignKey('DataModel', blank=True, null=True, related_name="contains")
+    concept = models.BooleanField(default=False)
     def __str__(self):
         return self.name
     

@@ -5,6 +5,7 @@ from postdoc.models import *
 class DataSetFormat(models.Model):
     name = models.CharField(max_length=30)
     module = models.CharField(max_length=100)
+    geographic = models.BooleanField()
     configuration_requirements = models.TextField()
     def __str__(self):
         return self.name    
