@@ -62,7 +62,7 @@ def get_visible_models():
     return dms
 
 def get_adminsitrative_instances():
-    tldmis = DataModelInstance.objects.filter(data_type__container__isnull=True)
+    tldmis = DataInstance.objects.filter(data_type__container__isnull=True)
     dmis = []
     for tldmi in tldmis:
         dmis.append({'id':tldmi.id, 'geometry':tldmi.geometry.geojson, 'url':""})
@@ -70,7 +70,7 @@ def get_adminsitrative_instances():
     
     
 def get_visible_instances():
-    tldmis = DataModelInstance.objects.filter(data_type__container__isnull=True)
+    tldmis = DataInstance.objects.filter(data_type__container__isnull=True)
     dmis = []
     for tldmi in tldmis:
         dmis.append({'id':tldmi.id, 'geometry':tldmi.geometry.geojson, 'url':""})

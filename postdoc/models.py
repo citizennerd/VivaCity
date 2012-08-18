@@ -11,6 +11,19 @@ class DataModel(models.Model):
     def __str__(self):
         return self.name
     
+    
+class DataTag(models.Model):
+    name=models.CharField(max_length=255)
+    description = models.TextField()
+    def __str__(self):
+        return self.name
+
+class ModelTags(models.Model):
+    data_model = models.ForeignKey(DataModel, related_name="tags")
+    tag = models.ForeignKey(DataTag, related_name="models")
+    def __str__(self):
+        return "%s - %s" % (self.data_model, self.tag, )
+
 class DataModelAttribute(models.Model):
     model = models.ForeignKey(DataModel, related_name="attributes")
     name = models.CharField(max_length=255)
