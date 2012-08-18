@@ -4,3 +4,4 @@ gondor==1.1.4
 gunicorn==0.14.6
 psycopg2==2.4.5
 dj-database-url==0.2.1
+httplib2>=0.7.4
