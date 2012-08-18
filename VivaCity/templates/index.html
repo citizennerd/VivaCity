@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <html>
 	<head>
 		<title> VivaCity </title>
@@ -44,6 +45,64 @@
 				 top:50px;
 				 width:100%;*/
 			}
+			#nav_ctrl{
+				position:absolute;
+				width:150px;
+				height:150px;
+				background-color:blue;
+				bottom:16px;
+				left:0px;
+			}
+			#btm_ctrl{
+				position:absolute;
+				width:600px;
+				height:150px;
+				background-color:blue;
+				bottom:16px;
+				left: 175px;}
+			#int_ctrl{
+				position:absolute;
+				width:5px;
+				left:15px;
+				bottom:166px;
+				height:500px;
+				background-color:blue;
+			}
+			#int_ctrl .btn{
+				position:relative;
+				margin-top:20px;
+				width:60px;
+				height:35px;
+				left:-15px;
+				background-color:orange;
+			}
+			#int_ctrl .erg{
+				position:relative;
+				margin-top:50px;
+				width:60px;
+				height:35px;
+				left:-15px;
+				background-color:red;
+			}
+			.hide_btn{
+				position:absolute;
+				width:25px;
+				height:25px;
+				background-color:red;
+			}
+			#hide_all{
+				
+				left:0;
+				bottom: 16px;
+			}
+			#hide_int{
+				left:0;
+				bottom:125px;
+			}
+			#hide_btm{
+				left:125px;
+				bottom:0px;
+			}
 
 			footer {
 				height: 15px;
@@ -63,7 +122,7 @@
 			VC = {};
 			VC.refresh = function() {
 				$('#map').height($(window).height() - $('header').height() - $('footer').height() - 1);
-				//$('#controls').height($(window).height()-$('header').height()-$('footer').height()-1);
+				$('#int_ctrl').height($(window).height()-$('header').height()-$('footer').height()-$('#nav_ctrl').height()-1);
 			}
 			$(window).resize(VC.refresh);
 			$(window).hashchange(function() {
@@ -81,6 +140,25 @@
 					}
 
 				}
+			});
+			VC.showing = true;
+			$('#hide_all').live('click', function(){
+				if (VC.showing){
+					$('.cmd_bar').hide();
+					VC.showing = false;
+				}
+				else{
+					$('.cmd_bar').show();
+					VC.showing = true;
+				}
+			});
+			
+			$('#hide_int').live('click', function(){
+				$('#int_ctrl').toggle();
+			});
+			
+			$('#hide_btm').live('click', function(){
+				$('#btm_ctrl').toggle();
 			});
 
 			$(function() {
@@ -107,7 +185,7 @@
 					numZoomLevels : 20
 				});
 				VC.map.addLayers([gsat, gmap, ghyb]);
-				VC.map.setZoomLeve(3);
+				VC.map.setZoomLevel(3);
 
 			});
 		</script>
@@ -120,9 +198,19 @@
 
 		</div>
 		<div id="controls">
-			<div id="nav_ctrl"></div>
-			<div id="btm_ctrl"></div>
-			<div id="interest"></div>
+			<div id="nav_ctrl" class="cmd_bar">
+				
+				<div id="hide_btm" class="hide_btn"></div> 
+				<div id="hide_int" class="hide_btn"></div> 
+			</div>
+			<div id="btm_ctrl" class="cmd_bar"> </div>
+			<div id="int_ctrl" class="cmd_bar">
+				<div id="env" class="btn"> </div> 
+				<div id="env" class="btn"> </div> 
+				<div id="env" class="btn"> </div> 
+				<div id="env" class="btn erg"> </div> 
+			</div>
+			<div id="hide_all" class="hide_btn"></div> 
 		</div>
 		<footer>
 			&copy; 2012 MMo.IT
