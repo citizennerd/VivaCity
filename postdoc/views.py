@@ -66,14 +66,18 @@ def get_visible_instances():
     dmis = []
     for tldmi in tldmis:
         dmis.append({'id':tldmi.id, 'geometry':tldmi.geometry.geojson, 'url':""})
+    return dmis
     
 
-def http_get_data_json(request, id):
+def http_get_data(request, id):
     return HttpResponse(json.dumps(get_data_json(id)), content_type="text/json")
 
-def http_get_instance_json(request, id):
+def http_get_instance(request, id):
     return HttpResponse(json.dumps(get_instance_json(id)), content_type="text/json")
 
 def http_get_visible_models(request):
     return HttpResponse(json.dumps(get_visible_models()), content_type="text/json")
+
+def http_get_visible_instances(request):
+    return HttpResponse(json.dumps(get_visible_instances()), content_type="text/json")
             
