@@ -15,6 +15,7 @@ class DataModel(models.Model):
 class DataTag(models.Model):
     name=models.CharField(max_length=255)
     description = models.TextField()
+    super = models.ForeignKey('DataTag', related_name="subtags", blank=True, null=True)
     def __str__(self):
         return self.name
 
@@ -34,7 +35,7 @@ class DataModelAttribute(models.Model):
     
 class DataInstance(models.Model):
     data_type = models.ForeignKey(DataModel, related_name = "instances")
-    geometry = gmodels.GeometryCollectionField(null=True, blank=True)
+#    geometry = gmodels.GeometryCollectionField(null=True, blank=True)
     
     def __str__(self):
         return "%s:%s" % (self.data_type, self.id, )

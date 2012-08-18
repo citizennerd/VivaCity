@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     url(r'^semantics/add/step_3$', 'semanticizer.views.step_3', name="step_3"),
 
     #admin (cuz we all luv dj)!!!
-    #url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 
 )
 

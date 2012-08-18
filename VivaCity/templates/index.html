@@ -21,6 +21,15 @@
 				font-size: xx-large;
 				vertical-align: middle;
 			}
+			
+			#search{
+				
+				position: relative;
+				display: inline-block;
+				font-family: 'Josefin Sans', sans-serif;
+				font-size: x-large;
+				left: 30px;
+			}
 
 			.main_title {
 				display: inline-block;
@@ -35,21 +44,21 @@
 				position: relative;
 				left: 30px;
 				color: #DDD;
+				cursor:move;
+			}
+	
+			.cmd_bar{
+				z-index: 10000;
 			}
 
 			#map {
 				width: 100%;
 			}
-			#controls {
-				/*position:absolute;
-				 top:50px;
-				 width:100%;*/
-			}
 			#nav_ctrl{
 				position:absolute;
 				width:150px;
 				height:150px;
-				background-color:blue;
+				background-color:#bcd;
 				bottom:16px;
 				left:0px;
 			}
@@ -57,7 +66,7 @@
 				position:absolute;
 				width:600px;
 				height:150px;
-				background-color:blue;
+				background-color:#bcd;
 				bottom:16px;
 				left: 175px;}
 			#int_ctrl{
@@ -66,8 +75,12 @@
 				left:15px;
 				bottom:166px;
 				height:500px;
-				background-color:blue;
+				background-color:#bcd;
 			}
+			.erg{
+				background-color:red;
+			}
+			
 			#int_ctrl>.btn{
 				position:relative;
 				margin-top:20px;
@@ -76,12 +89,16 @@
 				left:-15px;
 				background-color:orange;
 			}
-			#int_ctrl .erg{
-				position:relative;
+			.btn>.btn{
+				position: relative;
+				left: 85px;
+				width: 60px;
+				height: 35px;
+				background-color: cyan;
+				margin-top: 20px;
+			}
+			#int_ctrl>.erg{
 				margin-top:50px;
-				width:60px;
-				height:35px;
-				left:-15px;
 				background-color:red;
 			}
 			.hide_btn{
@@ -94,6 +111,7 @@
 				
 				left:0;
 				bottom: 16px;
+				z-index:10001;
 			}
 			#hide_int{
 				left:0;
@@ -102,6 +120,58 @@
 			#hide_btm{
 				left:125px;
 				bottom:0px;
+			}
+			
+			#op_zoom_in{
+				width:25px;
+				height:25px;
+				position:absolute;
+				background-color:black;
+				bottom:75px;
+				left:62px;
+			}
+			#op_zoom_out{
+				width:25px;
+				height:25px;
+				position:absolute;
+				background-color:black;
+				bottom:50px;
+				left:62px;
+			}
+			#op_e{
+				width:25px;
+				height:50px;
+				position:absolute;
+				background-color:black;
+				bottom:50px;
+				left:100px;
+			}
+			
+			#op_w{
+				width:25px;
+				height:50px;
+				position:absolute;
+				background-color:black;
+				bottom:50px;
+				left:25px;
+			}
+			
+			#op_n{
+				width:50px;
+				height:25px;
+				position:absolute;
+				background-color:black;
+				bottom:100px;
+				left:50px;
+			}
+			
+			#op_s{
+				width:50px;
+				height:25px;
+				position:absolute;
+				background-color:black;
+				bottom:25px;
+				left:50px;
 			}
 
 			footer {
@@ -113,8 +183,17 @@
 				font-family: Calibri, arial, sans-serif;
 				text-align: center;
 			}
-			.olLayerGoogleV3.olLayerGooglePoweredBy{
+			.olLayerGoogleV3{
+				position:relative;
 				float:right;
+			}
+			
+			.selected{
+				border-right:5px solid red;
+			}
+			
+			#search{
+				
 			}
 		</style>
 		<script>
@@ -177,8 +256,82 @@
 			$('#hide_btm').live('click', function(){
 				$('#btm_ctrl').toggle();
 			});
+			
+			$('#op_zoom_in').live('click', function(){
+				VC.map.zoomIn();
+			});
+			
+			$('#op_zoom_out').live('click', function(){
+				VC.map.zoomOut();
+			});
+			$('#op_e').live('click', function(){
+				VC.map.pan(100,0);
+			});
+			
+			$('#op_w').live('click', function(){
+				VC.map.pan(-100,0);
+			});
+			
+			$('#op_n').live('click', function(){
+				VC.map.pan(0,-100);
+			});
+			$('#op_s').live('click', function(){
+				VC.map.pan(0,100);
+			});
+			
+
+			$('.btn').live('click', function(e){
+				if ($(this).hasClass('selected')){
+					
+						$(this).children('.btn').hide();
+						$(this).removeClass('selected');
+				}else{
+					if ($(this).parent().hasClass('btn') && $(this).parent().hasClass('selected')){
+						
+						$(this).siblings().removeClass('selected');
+						$(this).siblings().children('.btn').hide();
+						
+						$(this).addClass('selected');
+						if ($(this).data('show')){
+							alert($(this).data('show'));
+						}
+						$(this).children('.btn').show();
+					} else{
+						$('.btn').removeClass('selected');
+						$('.btn .btn').hide();				
+						if ($(this).data('show')){
+							alert($(this).data('show'));
+						}
+						$(this).children('.btn').show();
+						$(this).addClass('selected');
+					}
+				}
+				e.preventDefault();
+				return false;
+			});
+			
+			$('.area_title').live('click', function(){
+				var qloc = $(this).text();
+				var p = $(this).parent()
+				$(this).remove();
+				$('header').append('<input type="text" id="search"></input>').focus();
+				
+			});
+			$('#search').live('keypress', function(event){
+				if( event.which == 13 ){
+					oloc = location.hash.split(';')[0].split(':')[1];
+					lloc = $(this).val();
+					$(this).remove();
+					$('header').append('<span class="area_title"></span>');
+					location.hash="#goto:"+lloc;
+					if (oloc == lloc)
+						$('.area_title').html(qloc);
+				}
+			});
 
 			$(function() {
+				$('.btn .btn').hide();
+				
 				VC.refresh();
 				$(window).hashchange();
 				VC.map = new OpenLayers.Map('map', {
@@ -186,9 +339,7 @@
 					theme:null
 				});
 				VC.map.addControl(new OpenLayers.Control.Navigation());
-				VC.map.addControl(new OpenLayers.Control.Zoom());
 				VC.map.addControl(new OpenLayers.Control.DragPan());
-				VC.map.addControl(new OpenLayers.Control.LayerSwitcher());
 
 				var gmap = new OpenLayers.Layer.Google("Google Streets", // the default
 				{
@@ -210,35 +361,48 @@
 	</head>
 	<body>
 		<header>
-			<span class="main_title">VivaCity</span><span class="area_title">Bologna</span>
+			<span class="main_title">VivaCity</span><span class="area_title"></span>
 		</header>
-		<div id="map">
-
-		</div>
-		<div id="controls">
-			<div id="nav_ctrl" class="cmd_bar">
-				
-				<div id="hide_btm" class="hide_btn"></div> 
-				<div id="hide_int" class="hide_btn"></div> 
+		<div id="content" style="z-index:0;">
+			<div id="map" style="z-index:0;">
+	
 			</div>
-			<div id="btm_ctrl" class="cmd_bar"> </div>
 			<div id="int_ctrl" class="cmd_bar">
 				<div id="env" class="btn">
-					<div id="env" class="btn"> </div>
-					<div id="env" class="btn"> </div>
-					<div id="env" class="btn"> </div>
+					<div id="" class="btn"> </div>
+					<div id="" class="btn"> </div>
+					<div id="" class="btn"> </div>
 				</div> 
-				<div id="env" class="btn"> 
-					<div id="env" class="btn"> </div>
+				<div id="" class="btn"> 
+					<div id="" class="btn"> </div>
 				</div> 
-				<div id="env" class="btn">
-					<div id="env" class="btn"> </div>
-					<div id="env" class="btn"> </div>
-					<div id="env" class="btn"> </div>
-					<div id="env" class="btn"> </div> 
+				<div id="" class="btn">
+					<div id="" class="btn"> </div>
+					<div id="" class="btn" data-show="test"> </div>
+					<div id="" class="btn">
+					<div id="" class="btn"> </div>
+					<div id="" class="btn"> </div>
+					<div id="" class="btn"> </div> </div>
+					<div id="" class="btn"> </div> 
 				</div> 
-				<div id="env" class="btn erg"> </div> 
+				<div id="as" class="btn erg"> 
+					<div id="" class="btn erg"> Quakes </div>
+					<div id="" class="btn erg"> Vulcanic Eruptions </div>
+					<div id="" class="btn"> Civil Protection </div> 
+				</div> 
 			</div>
+			<div id="nav_ctrl" class="cmd_bar">
+				<div id="hide_btm" class="hide_btn"></div> 
+				<div id="hide_int" class="hide_btn"></div>
+				
+				<div id="op_zoom_in"></div>
+				<div id="op_zoom_out"></div>
+				<div id="op_e"></div>
+				<div id="op_n"></div>
+				<div id="op_s"></div>
+				<div id="op_w"></div> 
+			</div>
+			<div id="btm_ctrl" class="cmd_bar"> </div>
 			<div id="hide_all" class="hide_btn"></div> 
 		</div>
 		<footer>
