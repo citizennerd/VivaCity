@@ -6,7 +6,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
 
     # main page
-    # url(r'^$', 'VivaCity.views.home', name='home'),
+    url(r'^$', 'ui.views.index', name='home'),
 
     #data urls
     url(r'^data/instances/(?<id>\d+)$', 'postdoc.views.http_get_instance'),
@@ -16,9 +16,10 @@ urlpatterns = patterns('',
     url(r'^data/models/visible$', 'postdoc.views.http_get_visible_models'),
 
     #semantics urls
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^semantics/add/step_1$', 'semanticizer.views.step_1', name="step_1"),
+    url(r'^semantics/add/step_2$', 'semanticizer.views.step_2', name="step_2"),
+    url(r'^semantics/add/step_3$', 'semanticizer.views.step_3', name="step_3"),
 
     #admin (cuz we all luv dj)!!!
-    url(r'^admin/', include(admin.site.urls)),
+    #url(r'^admin/', include(admin.site.urls)),
 )
