@@ -28,8 +28,8 @@ class SemanticsSpecification(models.Model):
     attribute = models.ForeignKey(DataModelAttribute)
     column = models.TextField()
     column_number = models.IntegerField()
-    
+    is_geo_x = models.BooleanField()
+    is_geo_y = models.BooleanField()    
     data_transformation = models.TextField()
-    
     def __str__(self):
         return "%s: %s => %s" % (self.semantics.dataset.file, self.column, self.attribute.name)
