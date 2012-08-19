@@ -36,6 +36,17 @@ Vivacity is composed of three main parts:
 ### PostDoc
 
 PostDoc represents a meta-model engine for postgres. Optimizations are obviously due and will be made, but the ideal would obviously be using a nosql database, at least for the instances.
+It is comprised of basically 4 classes, with 2 support classes for the user interface to be used. The four main classes are 
+
+- DataModel
+- DataModelAttribute
+
+represending the structure of the data itself
+
+- DataInstance
+- DataAttributeInstance
+
+representing the live instances of data. 
 
 ### Semanticizer
 
@@ -46,6 +57,3 @@ If the data is very de-structured, it could be necessary to connect the core of 
 ### VivaCity
 
 Vivacity takes the SimCity experience on simulated worlds and brings the best of it to be used in a new open-data based approach. Every information is explorable, everything can be drilled-down/drilled-across.
-
-Oh, and because I want the project to live long, prosper and to be used and evolved, you are welcome to Fork it and add new data-providers or new visualization methods or anything!!! Or new importable datasets or expand the model...
-VivaCity is a product by Marco Montanari
