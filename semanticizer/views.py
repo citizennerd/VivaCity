@@ -12,13 +12,27 @@ def fetch_data(request,id):
     model = ds.format.module
     fmat = get_adapter(model)()
     
+    meta = {}
+    ss = {
+          'file':ds.file,
+          'format':ds.format.name,
+          'semantics':[]
+            }
     transform = {}
     for semantic in ds.semantics.all():
+        sq = {
+              'data_model': semantic.data_model.name,
+              'data_model_id': semantic.data_model.id
+        }
+        ss['semantics'].append(sq)
         for spec in semantic.associations.all():
             transform[spec.column] = []
             tsc = {}
             tsc['target'] = spec.attribute.id
             tsc['op'] = spec.data_transformation
+            tsc['semantics'] = spec.id
+            tsc['data_model'] = semantic.data_model.name
+            tsc['data_model_id'] = semantic.data_model.id
             transform[spec.column].append(tsc)
         for spec in semantic.geo_associations.all():
             transform[spec.column] = []
@@ -27,9 +41,14 @@ def fetch_data(request,id):
             tsc['op'] = spec.data_transformation
             tsc['col_x'] = spec.is_geo_x
             tsc['col_y'] = spec.is_geo_y
+            tsc['semantics'] = spec.id
+            tsc['data_model'] = semantic.data_model.name
+            tsc['data_model_id'] = semantic.data_model.id
             transform[spec.column].append(tsc)
     data = fmat.to_dict(ds.file, transform)
-    return HttpResponse(json.dumps(data))
+    meta['data'] = data
+    meta['dataset'] = ss    
+    return HttpResponse(json.dumps(meta))
     
 
 def step_1(request):

@@ -14,7 +14,7 @@ class DataSet(models.Model):
     file = models.URLField()
     format = models.ForeignKey(DataSetFormat)
     format_configuration = models.TextField()
-    refresh_period = models.TextField()
+    refresh_period = models.TextField(blank = True, null=True)
     def __str__(self):
         return self.file    
     

@@ -1,4 +1,5 @@
 from . import BaseFormatter, do_transformation
+from django.contrib.gis.gdal import OGRGeometry
 from django.contrib.gis.geos import Point
 import csv
 import StringIO
@@ -21,7 +22,7 @@ class Formatter(BaseFormatter):
         cols = self.extract_columns(url, **kwargs)
         print cols
         col_nums = {}
-        single_geo_col = False
+        single_geo_col = None
         for i in range(0,len(cols)):
             for sc in selected_cols:
                 if cols[i] == sc:
@@ -30,7 +31,7 @@ class Formatter(BaseFormatter):
                         if "col_x" in transformation[sc][0] and transformation[sc][0]['col_x'] and 'col_y' in transformation[sc][0] and transformation[sc][0]['col_y']:
                             col_x = i
                             col_y = i
-                            single_geo_col = True
+                            single_geo_col = sc
                         elif "col_x" in transformation[sc][0] and transformation[sc][0]['col_x']:
                             col_x = i
                         elif 'col_y' in transformation[sc][0] and transformation[sc][0]['col_y']:
@@ -47,8 +48,8 @@ class Formatter(BaseFormatter):
         for row in reader:
             rr = {}
             if geo:
-                if single_geo_col:
-                    geom = OGRGeometry('POINT'+row[col_x].replace(','," "))
+                if single_geo_col is not None:
+                    geom = OGRGeometry('POINT'+do_transformation(row[col_x], transformation[single_geo_col][0]['op']).replace(','," "))
                 else:
                     r_x = row[col_x]
                     r_y = row[col_y]

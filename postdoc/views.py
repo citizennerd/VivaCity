@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 
 from postdoc.models import *
-
+from postdoc.ops import do_store
 import json
 
 def get_instance_json(instance_id):
@@ -81,8 +81,10 @@ def get_visible_instances():
         dmis.append({'id':tldmi.id, 'geometry':tldmi.geometry.geojson, 'url':""})
     return dmis
     
-
-
+def store(request, id):
+    data = urllib2.urllib('/semantics/fetch/'+id).read()
+    data = json.loads(data)
+    return HttpResponse(json.dumps(do_store(data)))
 
 def http_get_data(request, id):
     return HttpResponse(json.dumps(get_data_json(id)), content_type="text/json")
