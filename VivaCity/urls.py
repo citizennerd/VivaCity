@@ -8,6 +8,7 @@ urlpatterns = patterns('',
 
     # main page
     url(r'^$', 'ui.views.index', name='home'),
+    url(r'^uth$', 'ui.views.uth', name='uth'),
     url(r'^external/(?P<path>.*)$', 'ui.views.proxy', name="proxy"),
 
     #data urls
