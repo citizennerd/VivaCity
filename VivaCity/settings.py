@@ -115,10 +115,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',  
     'django.contrib.admin',  
+    'django.contrib.gis',
     'south',
     # theme
     "pinax_theme_bootstrap",
-    'django.contrib.gis',
     
     # external
     "django_forms_bootstrap",
