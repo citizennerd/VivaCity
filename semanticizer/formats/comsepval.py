@@ -2,6 +2,7 @@ from . import BaseFormatter, do_transformation
 from django.contrib.gis.geos import Point
 import csv
 import StringIO
+import json
 
 class Formatter(BaseFormatter):
     def extract_columns(self, url, **kwargs):
@@ -14,17 +15,25 @@ class Formatter(BaseFormatter):
     def to_dict(self, url, transformation, **kwargs):
         file = self.get_file(url)
         splitter = kwargs['splitter'] if "splitter" in kwargs else ","
-        geo = kwargs['geo'] if "geo" in kwargs else False
+        print transformation
+        geo = True
         selected_cols = transformation.keys()
         cols = self.extract_columns(url, **kwargs)
+        print cols
         col_nums = {}
-        for i in range(1,len(cols)):
+        single_geo_col = False
+        for i in range(0,len(cols)):
             for sc in selected_cols:
                 if cols[i] == sc:
-                    if geo:
-                        if "col_x" in transformation[sc]:
+                    if transformation[sc][0]['target'] =="GEOMETRY":
+                        print transformation[sc]
+                        if "col_x" in transformation[sc][0] and transformation[sc][0]['col_x'] and 'col_y' in transformation[sc][0] and transformation[sc][0]['col_y']:
                             col_x = i
-                        elif 'col_y' in transformation[sc]:
+                            col_y = i
+                            single_geo_col = True
+                        elif "col_x" in transformation[sc][0] and transformation[sc][0]['col_x']:
+                            col_x = i
+                        elif 'col_y' in transformation[sc][0] and transformation[sc][0]['col_y']:
                             col_y = i
                         else:
                             col_nums[i] = sc   
@@ -36,16 +45,20 @@ class Formatter(BaseFormatter):
         reader = csv.reader(f, delimiter=splitter)
         reader.next()
         for row in reader:
-            for i in range(1, len(row)):
-                rr = {}
+            rr = {}
+            if geo:
+                if single_geo_col:
+                    geom = OGRGeometry('POINT'+row[col_x].replace(','," "))
+                else:
+                    r_x = row[col_x]
+                    r_y = row[col_y]
+                    geom = Point(float(r_y),float(r_x)) 
+                rr ['geo_location'] = json.loads(geom.json)
+            for i in range(0, len(row)):
                 if i in col_nums.keys():
                     for trans in transformation[col_nums[i]]:
                         rr[trans['target']] = do_transformation(row[i], trans['op'])
-                    js.append(rr)
-            if geo:
-                r_x = row[col_x]
-                r_y = row[col_y]
-                geom = Point(r_x, r_y) 
-                js ['geo_location'] = geom
+            js.append(rr)
+            
         return js
                 

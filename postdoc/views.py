@@ -43,9 +43,10 @@ def get_data_json(datamodel_id):
     jdm['is_base'] = dm.is_base
     jdm['geo_representation'] = dm.geo_representation
     jdm['attributes'] = []
-    for attribute in dm.attributes.all():
+    for attribute in dm.all_attributes():
         jdma = {}
         jdma['name'] = attribute.name
+        jdma['full_name'] = str(attribute)
         jdma['id'] = attribute.id
         jdma['data_type'] = attribute.data_type.name
         jdma['data_type_id'] = attribute.data_type.id
@@ -80,6 +81,8 @@ def get_visible_instances():
         dmis.append({'id':tldmi.id, 'geometry':tldmi.geometry.geojson, 'url':""})
     return dmis
     
+
+
 
 def http_get_data(request, id):
     return HttpResponse(json.dumps(get_data_json(id)), content_type="text/json")

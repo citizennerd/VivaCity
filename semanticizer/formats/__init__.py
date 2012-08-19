@@ -43,17 +43,14 @@ def do_transformation(s, trans):
     status = s
     operations  = trans.split('.')
     for operation in operations:
-        print operation
         if operation.strip() != "":
             args = operation.split('(')[1].split(")")[0].split(",")
             for i in range(0,len(args)):
                 if args[i] == '" "':
-                    del args[i]
                     args.append(" ")
                     args.append("\n")
                     args.append("\t")
                     args.append("\r")
-            print args
             if operation.startswith('on_longer_than'):
                 status = [s for s in status if len(s) > int(args[0])]
             if operation.startswith('on_shorter_than'):
@@ -71,7 +68,6 @@ def do_transformation(s, trans):
             if operation.startswith('on_islower'):
                 status = [s for s in status if s.islower()]
             if operation.startswith('split'):
-                print "splitting!!!"
                 status = multi_split(status, args)
             if operation.startswith('get'):   
                 status = [status[int(i)] for i in args]
@@ -81,6 +77,11 @@ def do_transformation(s, trans):
                 status = [s.lower() for s in status]
             if operation.startswith('strip'):   
                 status = [s.strip() for s in status]
-        print status
-    return " ".join(status)
+            if operation.startswith('prepend'):   
+                status = args[0]+status
+            if operation.startswith('apppend'):   
+                status = status + args[0]
+    if isinstance(status, type([])):
+        return " ".join(status)
+    return status
 

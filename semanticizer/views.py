@@ -20,6 +20,14 @@ def fetch_data(request,id):
             tsc['target'] = spec.attribute.id
             tsc['op'] = spec.data_transformation
             transform[spec.column].append(tsc)
+        for spec in semantic.geo_associations.all():
+            transform[spec.column] = []
+            tsc = {}
+            tsc['target'] = "GEOMETRY"
+            tsc['op'] = spec.data_transformation
+            tsc['col_x'] = spec.is_geo_x
+            tsc['col_y'] = spec.is_geo_y
+            transform[spec.column].append(tsc)
     data = fmat.to_dict(ds.file, transform)
     return HttpResponse(json.dumps(data))
     

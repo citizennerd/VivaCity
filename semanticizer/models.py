@@ -27,16 +27,17 @@ class Semantics(models.Model):
 class SemanticsSpecification(models.Model):
     semantics = models.ForeignKey(Semantics, related_name="associations")
     attribute = models.ForeignKey(DataModelAttribute)
-    column = models.TextField(blank = True, null=True)
+    column = models.CharField(max_length=200,blank = True, null=True)
     column_number = models.IntegerField(blank = True, null=True)
-    data_transformation = models.TextField()
+    data_transformation = models.CharField(max_length=200)
     def __str__(self):
         return "%s: %s => %s" % (self.semantics.dataset.file, self.column, self.attribute.name)
 
 class GeoSemanticsSpecification(models.Model):
     semantics = models.ForeignKey(Semantics, related_name="geo_associations")
-    column = models.TextField()
-    column_number = models.IntegerField()
+    column = models.CharField(max_length=200, null=True, blank=True)
+    column_number = models.IntegerField(null=True, blank=True)
     is_geo_x = models.BooleanField()
     is_geo_y = models.BooleanField()    
-    data_transformation = models.TextField()
+    data_transformation = models.CharField(max_length=200)
+    

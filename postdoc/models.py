@@ -10,6 +10,17 @@ class DataModel(models.Model):
     concept = models.BooleanField(default=False)
     def __str__(self):
         return self.name
+    def hierarchy(self):
+        list_up_ids = []
+        elem = self
+        while elem.super != None:
+            list_up_ids.append(elem.id)
+            elem = elem.super
+        list_up_ids.append(elem.id)
+        return list_up_ids
+    
+    def all_attributes(self):
+        return DataModelAttribute.objects.filter(model__id__in=self.hierarchy())
     
     
 class DataTag(models.Model):
