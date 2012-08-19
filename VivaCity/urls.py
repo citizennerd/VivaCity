@@ -13,10 +13,13 @@ urlpatterns = patterns('',
 
     #data urls
     url(r'^data/instances/(?P<id>\d+)$', 'postdoc.views.http_get_instance'),
-    url(r'^data/models/(?P<id>\d+)$', 'postdoc.views.http_get_data'),
-    
     url(r'^data/instances/visible$', 'postdoc.views.http_get_visible_instances'),
+    url(r'^data/instances/all$', 'postdoc.views.http_get_all_instances'),
+    
+    url(r'^data/models/(?P<id>\d+)$', 'postdoc.views.http_get_data'),
     url(r'^data/models/visible$', 'postdoc.views.http_get_visible_models'),
+    
+    url(r'^data/import/(?P<id>\d+)$', 'postdoc.views.store'),
 
     #semantics urls
     url(r'^semantics/fetch/(?P<id>\d+)$', 'semanticizer.views.fetch_data', name="fetch"),

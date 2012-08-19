@@ -44,13 +44,7 @@ def do_transformation(s, trans):
     operations  = trans.split('.')
     for operation in operations:
         if operation.strip() != "":
-            args = operation.split('(')[1].split(")")[0].split(",")
-            for i in range(0,len(args)):
-                if args[i] == '" "':
-                    args.append(" ")
-                    args.append("\n")
-                    args.append("\t")
-                    args.append("\r")
+            args = operation.split('(',1)[1].rsplit(")",1)[0].split(",")
             if operation.startswith('on_longer_than'):
                 status = [s for s in status if len(s) > int(args[0])]
             if operation.startswith('on_shorter_than'):
@@ -68,6 +62,12 @@ def do_transformation(s, trans):
             if operation.startswith('on_islower'):
                 status = [s for s in status if s.islower()]
             if operation.startswith('split'):
+                for i in range(0,len(args)):
+                    if args[i] == '" "':
+                        args.append(" ")
+                        args.append("\n")
+                        args.append("\t")
+                        args.append("\r")
                 status = multi_split(status, args)
             if operation.startswith('get'):   
                 status = [status[int(i)] for i in args]
@@ -79,8 +79,12 @@ def do_transformation(s, trans):
                 status = [s.strip() for s in status]
             if operation.startswith('prepend'):   
                 status = args[0]+status
-            if operation.startswith('apppend'):   
+            if operation.startswith('append'):   
                 status = status + args[0]
+            if operation.startswith('replace'):   
+                for i in range(0, len(args)):
+                    args[i] = args[i].replace("\"","")
+                status = status.replace(args[0],args[1])
     if isinstance(status, type([])):
         return " ".join(status)
     return status

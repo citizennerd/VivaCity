@@ -18,7 +18,7 @@ class Formatter(BaseFormatter):
         f = zf.namelist()
         zf.extractall(td)        
         
-        data = gdal.DataSource(os.path.join(td,'.'.join(zf.namelist()[0])))
+        data = gdal.DataSource(os.path.join(td,zf.namelist()[0]))
         layer = data[0]
         return layer.fields
     
@@ -43,7 +43,7 @@ class Formatter(BaseFormatter):
             rr = {}
             for col in selected_cols:
                 for trans in transformation[col]:
-                    rr[trans['target']] = do_transformation(feat.get(col), trans['op'])
+                    rr[trans['target']] = {"value":do_transformation(feat.get(col), trans['op']),'via':trans['via']}
             
             try: 
                 rr ['geo_location'] = json.loads(feat.geom.transform("EPSG:4326",clone=True).json)

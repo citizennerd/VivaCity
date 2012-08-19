@@ -49,16 +49,18 @@ class Formatter(BaseFormatter):
             rr = {}
             if geo:
                 if single_geo_col is not None:
-                    geom = OGRGeometry('POINT'+do_transformation(row[col_x], transformation[single_geo_col][0]['op']).replace(','," "))
+                    string = 'POINT('+do_transformation(row[col_x], transformation[single_geo_col][0]['op']).replace(','," ")+')'
+                    geom = OGRGeometry(string)
                 else:
                     r_x = row[col_x]
                     r_y = row[col_y]
                     geom = Point(float(r_y),float(r_x)) 
+                    print geom
                 rr ['geo_location'] = json.loads(geom.json)
             for i in range(0, len(row)):
                 if i in col_nums.keys():
                     for trans in transformation[col_nums[i]]:
-                        rr[trans['target']] = do_transformation(row[i], trans['op'])
+                        rr[trans['target']] = {'value':do_transformation(row[i], trans['op']), 'via':trans['via']}
             js.append(rr)
             
         return js

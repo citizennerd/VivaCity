@@ -37,6 +37,13 @@
 				position: relative;
 				left: 8px;
 			}
+			.uth {
+				display: inline-block;
+				top: -6px;
+				position: relative;
+				right: 8px;
+				float:right;
+			}
 
 			.area_title {
 				display: inline-block;
@@ -105,73 +112,82 @@
 				position:absolute;
 				width:25px;
 				height:25px;
-				background-color:red;
+				background-color:#cde;
 			}
 			#hide_all{
 				
 				left:0;
 				bottom: 16px;
 				z-index:10001;
+				background-image:url(/static/img/x.png);
 			}
 			#hide_int{
 				left:0;
 				bottom:125px;
+				background-image:url(/static/img/x.png);
 			}
 			#hide_btm{
 				left:125px;
 				bottom:0px;
+				background-image:url(/static/img/x.png);
 			}
 			
 			#op_zoom_in{
 				width:25px;
 				height:25px;
 				position:absolute;
-				background-color:black;
+				background-color:#bcd;
 				bottom:75px;
 				left:62px;
+				background-image:url(/static/img/plus.png);
 			}
 			#op_zoom_out{
 				width:25px;
 				height:25px;
 				position:absolute;
-				background-color:black;
+				background-color:#bcd;
 				bottom:50px;
 				left:62px;
+				background-image:url(/static/img/minus.png);
 			}
 			#op_e{
 				width:25px;
 				height:50px;
 				position:absolute;
-				background-color:black;
+				background-color:#bcd;
 				bottom:50px;
 				left:100px;
+				background-image:url(/static/img/e.png);
 			}
 			
 			#op_w{
 				width:25px;
 				height:50px;
 				position:absolute;
-				background-color:black;
+				background-color:#bcd;
 				bottom:50px;
 				left:25px;
+				background-image:url(/static/img/w.png);
 			}
 			
 			#op_n{
 				width:50px;
 				height:25px;
 				position:absolute;
-				background-color:black;
+				background-color:#bcd;
 				bottom:100px;
 				left:50px;
+				background-image:url(/static/img/n.png);
 			}
 			
 			#op_s{
 				width:50px;
 				height:25px;
 				position:absolute;
-				background-color:black;
+				background-color:#bcd;
 				bottom:25px;
 				left:50px;
+				background-image:url(/static/img/s.png);
 			}
 
 			footer {
@@ -215,10 +231,9 @@
 				$('#map').height($(window).height() - $('header').height() - $('footer').height() - 1);
 				$('#int_ctrl').height($(window).height()-$('header').height()-$('footer').height()-$('#nav_ctrl').height()-1);
 			}
-			VC.projections ={};
-			VC.projections.google = new OpenLayers.Projection("EPSG:900913");
-			VC.projections.wgs84 = new OpenLayers.Projection("EPSG:4326");
-
+			
+			
+       		
 			$(window).resize(VC.refresh);
 			$(window).hashchange(function() {
 				if (location.hash) {
@@ -251,6 +266,10 @@
 			
 			$('#hide_int').live('click', function(){
 				$('#int_ctrl').toggle();
+			});
+			
+			$('.uth').live('click', function(){
+				window.location = "/uth";
 			});
 			
 			$('#hide_btm').live('click', function(){
@@ -329,6 +348,33 @@
 				}
 			});
 
+				VC.get_data = function(){
+					bb = VC.map.getExtent().toGeometry().transform(VC.projections.google,VC.projections.wgs84).getBounds().toBBOX();					
+					$.getJSON("/data/instances/visible?BB="+bb, function(data){
+						console.log(data);
+						VC.geojson_format = new OpenLayers.Format.GeoJSON({'externalProjection':VC.projections.wgs84, 'internalProjection':VC.projections.google});3
+						proj = VC.geojson_format.read(data);
+						console.log(proj);
+						VC.vector_layer.removeAllFeatures();
+						VC.vector_layer.addFeatures(proj);
+					});
+				}
+				
+				VC.style = new OpenLayers.StyleMap({
+                "default": new OpenLayers.Style({
+                    pointRadius: "5px", 
+                    fillColor: "#ffcc66",
+                    strokeColor: "#ff9933",
+                    strokeWidth: 2,
+                    graphicZIndex: 1
+                }),
+                "select": new OpenLayers.Style({
+                    fillColor: "#66ccff",
+                    strokeColor: "#3399ff",
+                    graphicZIndex: 2
+                })
+            });
+
 			$(function() {
 				$('.btn .btn').hide();
 				
@@ -336,10 +382,18 @@
 				$(window).hashchange();
 				VC.map = new OpenLayers.Map('map', {
 					controls : [],
-					theme:null
+					theme:null,
+					projection:VC.projections.google
 				});
+				
+       			VC.vector_layer = new OpenLayers.Layer.Vector("elements",{
+       				//styleMap:VC.style
+       			}); 
+       			
+       		
 				VC.map.addControl(new OpenLayers.Control.Navigation());
 				VC.map.addControl(new OpenLayers.Control.DragPan());
+				
 
 				var gmap = new OpenLayers.Layer.Google("Google Streets", // the default
 				{
@@ -355,13 +409,38 @@
 				});
 				VC.map.addLayers([gsat, gmap, ghyb]);
 				VC.map.zoomTo(3);
+				
+           		VC.map.addLayer(VC.vector_layer);
+				VC.map.events.register('moveend', VC.map ,	VC.get_data);
+				
+				VC.selectControl = new OpenLayers.Control.SelectFeature(
+	                VC.vector_layer,
+	                {
+	                    clickout: true, toggle: false,
+	                    multiple: false, hover: false,
+	                    toggleKey: "ctrlKey", // ctrl key removes from selection
+	                    multipleKey: "shiftKey" // shift key adds to selection
+	                }
+            	);
+            
+	            VC.map.addControl(VC.selectControl);
+	            VC.selectControl.activate();
+	            
+	            VC.vector_layer.events.on({
+                "featureselected": function(e) {
+                    alert("selected feature "+e.feature.id+" on Vector Layer 1");
+                },
+                "featureunselected": function(e) {
+                    alert("unselected feature "+e.feature.id+" on Vector Layer 1");
+                }
+            });
 
 			});
 		</script>
 	</head>
 	<body>
 		<header>
-			<span class="main_title">VivaCity</span><span class="area_title"></span>
+			<span class="main_title">VivaCity</span><span class="area_title"> </span><span class="uth">Under the hood</span>
 		</header>
 		<div id="content" style="z-index:0;">
 			<div id="map" style="z-index:0;">

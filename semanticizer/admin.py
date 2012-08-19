@@ -14,10 +14,14 @@ class SemanticsInLine(admin.StackedInline):
         GeoSemanticsSpecificationInline
     ]
     
+class DataSetColumnInline(admin.ModelAdmin):
+    model = DataSetColumn
+    fields=["name"]
+    
 class DataSetAdmin(admin.ModelAdmin):
     list_display=('file', 'format')
     inlines = [
-        SemanticsInLine
+        SemanticsInLine,
     ]
 class SemanticsAdmin(admin.ModelAdmin):
     model = Semantics
@@ -26,11 +30,13 @@ class SemanticsAdmin(admin.ModelAdmin):
         GeoSemanticsSpecificationInline
     ]
     
-    
+
 
 
 admin.site.register(DataSetFormat)
 admin.site.register(DataSet, DataSetAdmin)
 admin.site.register(Semantics, SemanticsAdmin)
 admin.site.register(SemanticsSpecification)
+admin.site.register(SemanticsSpecificationPath)
+admin.site.register(DataSetColumn,DataSetColumnInline)
 admin.site.register(GeoSemanticsSpecification)

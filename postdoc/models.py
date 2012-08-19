@@ -52,7 +52,18 @@ class DataModelAttribute(models.Model):
     
 class DataInstance(models.Model):
     data_type = models.ForeignKey(DataModel, related_name = "instances")
+    
     geometry = models.GeometryCollectionField(null=True, blank=True)
+    mgeometry = models.GeometryField(null=True, blank=True)
+    objects = models.GeoManager()
+    @property
+    def get_geometry(self):
+        if self.geometry and self.mgeometry is None:
+            return None
+        elif self.geometry is None:
+            return self.mgeometry
+        else:
+            return self.geometry
     
     def __str__(self):
         return "%s:%s" % (self.data_type, self.id, )

@@ -3,16 +3,37 @@ from django.http import HttpResponse
 from postdoc.models import *
 from postdoc.ops import do_store
 import json
+import urllib2
+from django.contrib.gis.geos import Polygon
 
-def get_instance_json(instance_id):
+
+from semanticizer.views import do_fetch_data_id
+
+'''{ "type": "Feature",
+  "bbox": [-180.0, -90.0, 180.0, 90.0],
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [[
+      [-180.0, 10.0], [20.0, 90.0], [180.0, -5.0], [-30.0, -90.0]
+      ]]
+    }
+  ...
+  }'''
+
+def get_instance_json_id (instance_id):
     di = DataInstance.objects.get(id=instance_id)
+    return get_instance_json(di)
+
+def get_instance_json(di, avoid_geo = False):
     jdi = {}
+    if di.get_geometry is not None and not avoid_geo:
+        jdi['type'] = "Feature"
     jdi['id'] = di.id
     jdi['data_type'] = di.data_type.name
     jdi['data_type_id'] = di.data_type.id
-    #if di.geometry is not None and di.geometry != "":
-    #    jdi['geometry'] = di.geometry.geojson(); 
-    jdi['attributes'] = []
+    if di.get_geometry is not None and not avoid_geo:
+        jdi['geometry'] = json.loads(di.get_geometry.geojson); 
+    jdi['properties'] = {}
     for attribute in di.attributes.all():
         jdia = {}
         jdia['id'] = attribute.attribute.id
@@ -20,11 +41,15 @@ def get_instance_json(instance_id):
         jdia['data_type'] = attribute.attribute.data_type.name
         jdia['data_type_id'] = attribute.attribute.data_type.id
         jdia['value'] = attribute.value
-        jdi['attributes'].append(jdia)
+        jdi['properties'][jdia['name']] = jdia
     return jdi
+
     
-def get_data_json(datamodel_id):
+def get_data_json_id(datamodel_id):
     dm = DataModel.objects.get(id=datamodel_id)
+    return get_data_json(dm)
+    
+def get_data_json(datamodel):
     jdm = {}
     
     jdm['name'] = dm.name
@@ -66,35 +91,52 @@ def get_visible_models():
         dms.append({"name":tldm.name, "id":tldm.id, 'url':""})
     return dms
 
-def get_adminsitrative_instances():
-    tldmis = DataInstance.objects.filter(data_type__container__isnull=True)
-    dmis = []
-    for tldmi in tldmis:
-        dmis.append({'id':tldmi.id, 'geometry':tldmi.geometry.geojson, 'url':""})
-    return dmis
+def get_visible_instances(BB, offset, mmax):
+    dis = {}
+    dis['type']="FeatureCollection"
+    dis["features"] = []
+    if BB is None:
+        queryset = DataInstance.objects.filter(geometry__isnull=False)| DataInstance.objects.filter(mgeometry__isnull=False)
+    else:
+        bbox = Polygon.from_bbox(BB)
+        print bbox
+        queryset = DataInstance.objects.filter(geometry__isnull=False)| DataInstance.objects.filter(mgeometry__isnull=False)
+    #    queryset = DataInstance.objects.filter(geometry__isnull=False, geometry__contains=bbox)| DataInstance.objects.filter(mgeometry__isnull=False, mgeometry__contains=bbox)
     
+        
     
-def get_visible_instances():
-    tldmis = DataInstance.objects.filter(data_type__container__isnull=True)
-    dmis = []
-    for tldmi in tldmis:
-        dmis.append({'id':tldmi.id, 'geometry':tldmi.geometry.geojson, 'url':""})
-    return dmis
+    for di in queryset[offset:offset+mmax]:
+        dis["features"].append(get_instance_json(di))
+    return dis      
+        
+def http_get_all_instances(request):
+    mmax = min(100, int(request.REQUEST.get('m', "100")))
+    offset = min(0, int(request.REQUEST.get('o', "0")))
+    
+    dis = []
+    for di in DataInstance.objects.all()[offset:offset+mmax]:
+        dis.append(get_instance_json(di, True))
+    return HttpResponse(json.dumps(dis))
+    
     
 def store(request, id):
-    data = urllib2.urllib('/semantics/fetch/'+id).read()
-    data = json.loads(data)
+    data = do_fetch_data_id(id)
     return HttpResponse(json.dumps(do_store(data)))
 
 def http_get_data(request, id):
     return HttpResponse(json.dumps(get_data_json(id)), content_type="text/json")
 
 def http_get_instance(request, id):
-    return HttpResponse(json.dumps(get_instance_json(id)), content_type="text/json")
+    return HttpResponse(json.dumps(get_instance_json_id(id)), content_type="text/json")
 
 def http_get_visible_models(request):
     return HttpResponse(json.dumps(get_visible_models()), content_type="text/json")
 
 def http_get_visible_instances(request):
-    return HttpResponse(json.dumps(get_visible_instances()), content_type="text/json")
+    mmax = min(100, int(request.REQUEST.get('m', "100")))
+    offset = min(0, int(request.REQUEST.get('o', "0")))
+    BB = request.REQUEST.get("BB", None)
+    if BB is not None:
+        BB = [float(bb) for bb in BB.split(",")]
+    return HttpResponse(json.dumps(get_visible_instances(BB,offset,mmax)), content_type="text/json")
 

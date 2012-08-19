@@ -7,8 +7,21 @@ from semanticizer.models import *
 
 import json
 
+
+
 def fetch_data(request,id):
+
     ds = DataSet.objects.get(id=id)
+    meta = do_fetch_data(ds)
+    
+    return HttpResponse(json.dumps(meta))
+    
+def do_fetch_data_id(id):
+    ds = DataSet.objects.get(id=id)
+    meta = do_fetch_data(ds)
+    return meta
+    
+def do_fetch_data(ds):
     model = ds.format.module
     fmat = get_adapter(model)()
     
@@ -29,6 +42,7 @@ def fetch_data(request,id):
             transform[spec.column] = []
             tsc = {}
             tsc['target'] = spec.attribute.id
+            tsc['via'] = spec.via.list_ids if spec.via is not None else None
             tsc['op'] = spec.data_transformation
             tsc['semantics'] = spec.id
             tsc['data_model'] = semantic.data_model.name
@@ -48,7 +62,7 @@ def fetch_data(request,id):
     data = fmat.to_dict(ds.file, transform)
     meta['data'] = data
     meta['dataset'] = ss    
-    return HttpResponse(json.dumps(meta))
+    return meta
     
 
 def step_1(request):
