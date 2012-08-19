@@ -75,7 +75,12 @@
 				height:150px;
 				background-color:#bcd;
 				bottom:16px;
-				left: 175px;}
+				left: 175px;
+				font-family:calibri, arial, helvetica, sans-serif;
+				font-size:small;
+			}
+				
+				
 			#int_ctrl{
 				position:absolute;
 				width:5px;
@@ -361,7 +366,7 @@
 					bb = VC.map.getExtent().toGeometry().transform(VC.projections.google,VC.projections.wgs84).getBounds().toBBOX();					
 					$.getJSON("/data/instances/visible?BB="+bb, function(data){
 						console.log(data);
-						VC.geojson_format = new OpenLayers.Format.GeoJSON({'externalProjection':VC.projections.wgs84, 'internalProjection':VC.projections.google});3
+						VC.geojson_format = new OpenLayers.Format.GeoJSON({'externalProjection':VC.projections.wgs84, 'internalProjection':VC.projections.google});
 						proj = VC.geojson_format.read(data);
 						console.log(proj);
 						VC.vector_layer.removeAllFeatures();
@@ -442,7 +447,8 @@
                     for (var i in x){
                     	list.push(x[i]);
                     }
-                    $('#btm_ctrl').append(ich.btm_container({'atts':list}));
+                    t = list[0].parent_type;
+                    $('#btm_ctrl').append(ich.btm_container({'atts':list, 'type':t}));
                 },
                 "featureunselected": function(e) {
                     $('#btm_ctrl').empty();
@@ -452,6 +458,7 @@
 			});
 		</script>
 		<script id="btm_container" type="text/html">
+			<h2>{% templatetag openvariable %}type{% templatetag closevariable %}</h2>
 			<ul>
 				{% templatetag openvariable %}#atts{% templatetag closevariable %}
   					{% templatetag openvariable %}> btm_content{% templatetag closevariable %}

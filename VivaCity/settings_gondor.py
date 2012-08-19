@@ -6,7 +6,6 @@ from .settings import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-print "installing new db"
 DATABASES = {
     "default": dj_database_url.config(env="GONDOR_DATABASE_URL"),
 }

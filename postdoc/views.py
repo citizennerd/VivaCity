@@ -9,16 +9,6 @@ from django.contrib.gis.geos import Polygon
 
 from semanticizer.views import do_fetch_data_id
 
-'''{ "type": "Feature",
-  "bbox": [-180.0, -90.0, 180.0, 90.0],
-  "geometry": {
-    "type": "Polygon",
-    "coordinates": [[
-      [-180.0, 10.0], [20.0, 90.0], [180.0, -5.0], [-30.0, -90.0]
-      ]]
-    }
-  ...
-  }'''
 
 def get_instance_json_id (instance_id):
     di = DataInstance.objects.get(id=instance_id)
@@ -36,6 +26,8 @@ def get_instance_json(di, avoid_geo = False):
     jdi['properties'] = {}
     for attribute in di.attributes.all():
         jdia = {}
+        jdia['parent_data_type'] = di.data_type.name
+        jdia['parent_type_id'] = di.data_type.id
         jdia['id'] = attribute.attribute.id
         jdia['name'] = attribute.attribute.name
         jdia['data_type'] = attribute.attribute.data_type.name
@@ -111,7 +103,7 @@ def get_visible_instances(BB, offset, mmax):
     return dis      
         
 def http_get_all_instances(request):
-    mmax = min(100, int(request.REQUEST.get('m', "100")))
+    mmax = min(400, int(request.REQUEST.get('m', "400")))
     offset = min(0, int(request.REQUEST.get('o', "0")))
     
     dis = []
@@ -134,7 +126,7 @@ def http_get_visible_models(request):
     return HttpResponse(json.dumps(get_visible_models()), content_type="text/json")
 
 def http_get_visible_instances(request):
-    mmax = min(100, int(request.REQUEST.get('m', "100")))
+    mmax = min(400, int(request.REQUEST.get('m', "400")))
     offset = min(0, int(request.REQUEST.get('o', "0")))
     BB = request.REQUEST.get("BB", None)
     if BB is not None:
