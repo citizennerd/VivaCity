@@ -32,6 +32,7 @@ Vivacity is composed of three main parts:
 - PostDoc, the model manager
 - Semanticizer, the semantics engine
 - VivaCity itself, the user interface
+
 ### PostDoc
 
 PostDoc represents a meta-model engine for postgres. Optimizations are obviously due and will be made, but the ideal would obviously be using a nosql database, at least for the instances.
