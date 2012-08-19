@@ -46,7 +46,7 @@ class DataModelAttribute(models.Model):
     
 class DataInstance(models.Model):
     data_type = models.ForeignKey(DataModel, related_name = "instances")
-    geometry = gmodels.GeometryCollectionField(null=True, blank=True)
+   # geometry = gmodels.GeometryCollectionField(null=True, blank=True)
     
     def __str__(self):
         return "%s:%s" % (self.data_type, self.id, )
