@@ -14,7 +14,7 @@ MEDIA_ROOT = os.path.join(os.environ["GONDOR_DATA_DIR"], "site_media", "media")
 STATIC_ROOT = os.path.join(os.environ["GONDOR_DATA_DIR"], "site_media", "static")
 
 MEDIA_URL = "/site_media/media/" # make sure this maps inside of site_media_url
-STATIC_URL = "/site_media/static/" # make sure this maps inside of site_media_url
+STATIC_URL = "/static/" # make sure this maps inside of site_media_url
 ADMIN_MEDIA_PREFIX = STATIC_URL + "admin/"
 
 FILE_UPLOAD_PERMISSIONS = 0640
