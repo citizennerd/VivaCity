@@ -47,6 +47,11 @@
 				height:400px;
 				display:block;
 			}
+			.long_slide{
+				width:100%;
+				height:700px;
+				display:block;
+			}
 			
 			.slide_content{
 				display:block;
@@ -62,6 +67,7 @@
 			$('.back').live('click', function(){
 				window.location = "/#goto:Chicago";
 			});
+			
 		</script>
 	</head>
 	<body>
@@ -119,16 +125,25 @@
 					<li>Semanticizer, the semantics engine</li>
 					<li>VivaCity itself, the user interface</li>
 				</ul>
+			</div>
+		</div>
+		<div class="long_slide slide" data-name="structure">
+			<div class="slide_content">
 				<h2>PostDoc</h2>
-				<p>PostDoc represents a meta-model engine for postgres. Optimizations are obviously due and will be made, but the ideal would obviously be using a nosql database.</p>
+				<p>PostDoc represents a meta-model engine for postgres. Optimizations are obviously due and will be made, but the ideal would obviously be using a nosql database, at least for the instances.</p>
 				<h2>Semanticizer</h2>
-				<p>Semanticizer is the connector to the outer world. It enables a semantic translation between various types of files (at the moment csv and anything readable by OGR and then zipped)</p>				
+				<p>Semanticizer is the connector to the outer world. It enables a semantic translation between various types of files (at the moment csv and anything readable by OGR and then zipped) and the model described by PostDoc.
+					Sometimes a translation needs more than just a renaming of columns. For that reason there is a small transformation language which enables the modification of a single value. </p>
+				<p>If the data is very de-structured, it could be necessary to connect the core of the information with elements that are a few logic steps away. For this reason it is possible to define semantic paths to create simple "model graphs" that the importer will respect and recreate in the system</p>
+				<h2>VivaCity</h2>
+				<p>Vivacity takes the SimCity experience on simulated worlds and brings the best of it to be used in a new open-data based approach. Every information is explorable, everything can be drilled-down/drilled-across.</p>				
 			</div>
 		</div>
 
 		<div class="slide" id="github">
 			<div class="slide_content">
-				Oh, and because I want the project to live and to be used and evolved, you are welcome to Fork it and add new data-providers or new visualization methods or anything!!!
+				<img src="https://encrypted-tbn0.google.com/images?q=tbn:ANd9GcQRPtzyLKrV1ULE1ZBEf5Pth_Xb63qa-KfVYcVqDHa-oe1yL1fpIQ" align="left">
+				Oh, and because I want the project to live long, prosper and to be used and evolved, you are welcome to <a href="https://github.com/citizennerd/VivaCity/fork_select">Fork it</a> and add new data-providers or new visualization methods or anything!!! Or new importable datasets or expand the model...
 			</div>
 		</div>
 		<footer>
