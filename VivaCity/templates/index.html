@@ -12,12 +12,12 @@
 			@import url(http://fonts.googleapis.com/css?family=Josefin+Sans:700);
 			body {
 				margin: 0 0 0 0;
+				font-family: 'Josefin Sans', sans-serif;
 			}
 			header {
 				height: 50px;
 				background-color: black;
 				color: white;
-				font-family: 'Josefin Sans', sans-serif;
 				font-size: xx-large;
 				vertical-align: middle;
 			}
@@ -112,7 +112,7 @@
 				position:absolute;
 				width:25px;
 				height:25px;
-				background-color:#cde;
+				background-color:#bcd;
 			}
 			#hide_all{
 				
@@ -210,6 +210,15 @@
 			
 			#search{
 				
+			}
+			
+			.is_base_true{
+				display: list-item;
+				list-style:disc;
+			}
+			.is_base_false{
+				display: list-item;
+				list-style:circle;				
 			}
 		</style>
 		<script>
@@ -428,15 +437,31 @@
 	            
 	            VC.vector_layer.events.on({
                 "featureselected": function(e) {
-                    alert("selected feature "+e.feature.id+" on Vector Layer 1");
+                    var x = e.feature.attributes;
+                    list = [];
+                    for (var i in x){
+                    	list.push(x[i]);
+                    }
+                    $('#btm_ctrl').append(ich.btm_container({'atts':list}));
                 },
                 "featureunselected": function(e) {
-                    alert("unselected feature "+e.feature.id+" on Vector Layer 1");
+                    $('#btm_ctrl').empty();
                 }
             });
 
 			});
 		</script>
+		<script id="btm_container" type="text/html">
+			<ul>
+				{% templatetag openvariable %}#atts{% templatetag closevariable %}
+  					{% templatetag openvariable %}> btm_content{% templatetag closevariable %}
+				{% templatetag openvariable %}/atts{% templatetag closevariable %}
+			</ul>
+		</script>
+		<script id="btm_content" class="partial" type="text/html">
+			<li data-typeid="{% templatetag openvariable %}data_type_id{% templatetag closevariable %}" class="is_base_{% templatetag openvariable %}is_base{% templatetag closevariable %}" data-type="{% templatetag openvariable %}data_type{% templatetag closevariable %}"><span class="data_name" >{% templatetag openvariable %}name{% templatetag closevariable %}</span>: <span class="vlaue">{% templatetag openvariable %}value{% templatetag closevariable %}</span></li>
+		</script>
+		
 	</head>
 	<body>
 		<header>

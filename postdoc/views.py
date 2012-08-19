@@ -39,6 +39,7 @@ def get_instance_json(di, avoid_geo = False):
         jdia['id'] = attribute.attribute.id
         jdia['name'] = attribute.attribute.name
         jdia['data_type'] = attribute.attribute.data_type.name
+        jdia['is_base'] = attribute.attribute.data_type.is_base        
         jdia['data_type_id'] = attribute.attribute.data_type.id
         jdia['value'] = attribute.value
         jdi['properties'][jdia['name']] = jdia
