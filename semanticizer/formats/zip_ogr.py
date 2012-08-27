@@ -17,8 +17,10 @@ class Formatter(BaseFormatter):
         zf = zipfile.ZipFile(tz.name)
         f = zf.namelist()
         zf.extractall(td)      
-        files = zf.namelist()
-        files = [{f.lower():f} for f in files]
+        tfiles = zf.namelist()
+        files = {}
+        for f in tfiles:
+            files[f.lower()]=f
         file = [o for f,o in files.items() if f.endswith("shp")][0]
         
         data = gdal.DataSource(os.path.join(td,file))
@@ -34,8 +36,10 @@ class Formatter(BaseFormatter):
         zf = zipfile.ZipFile(tz.name)
         f = zf.namelist()
         zf.extractall(td)        
-        files = zf.namelist()
-        files = [{f.lower():f} for f in files]
+        tfiles = zf.namelist()
+        files = {}
+        for f in tfiles:
+            files[f.lower()]=f
         file = [o for f,o in files.items() if f.endswith("shp")][0]
         
         data = gdal.DataSource(os.path.join(td,file))
