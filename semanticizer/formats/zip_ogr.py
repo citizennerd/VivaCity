@@ -16,9 +16,12 @@ class Formatter(BaseFormatter):
         td = tempfile.mkdtemp()
         zf = zipfile.ZipFile(tz.name)
         f = zf.namelist()
-        zf.extractall(td)        
+        zf.extractall(td)      
+        files = zf.namelist()
+        files = [{f.lower():f} for f in files]
+        file = [o for f,o in files.items() if f.endswith("shp")][0]
         
-        data = gdal.DataSource(os.path.join(td,zf.namelist()[0]))
+        data = gdal.DataSource(os.path.join(td,file))
         layer = data[0]
         return layer.fields
     
@@ -31,8 +34,11 @@ class Formatter(BaseFormatter):
         zf = zipfile.ZipFile(tz.name)
         f = zf.namelist()
         zf.extractall(td)        
+        files = zf.namelist()
+        files = [{f.lower():f} for f in files]
+        file = [o for f,o in files.items() if f.endswith("shp")][0]
         
-        data = gdal.DataSource(os.path.join(td,zf.namelist()[0]))
+        data = gdal.DataSource(os.path.join(td,file))
         layer = data[0]
         
         selected_cols = transformation.keys()
