@@ -84,5 +84,6 @@ class GeoSemanticsSpecification(models.Model):
     column = models.CharField(max_length=500,blank = True, null=True)
     is_geo_x = models.BooleanField()
     is_geo_y = models.BooleanField()    
+    geocode_address = models.BooleanField()
     data_transformation = models.CharField(max_length=200)
     

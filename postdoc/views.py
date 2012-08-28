@@ -4,17 +4,17 @@ from postdoc.models import *
 from postdoc.ops import do_store
 import json
 import urllib2
-from django.contrib.gis.geos import Polygon
-
+from django.contrib.gis.geos import Polygon, Point
+from django.contrib.gis.measure import D
 
 from semanticizer.views import do_fetch_data_id
 
 
-def get_instance_json_id (instance_id):
+def get_instance_json_id (instance_id, flatten=False):
     di = DataInstance.objects.get(id=instance_id)
-    return get_instance_json(di)
+    return get_instance_json(di,False,flatten)
 
-def get_instance_json(di, avoid_geo = False):
+def get_instance_json(di, avoid_geo = False, flatten=False):
     jdi = {}
     if di.get_geometry is not None and not avoid_geo:
         jdi['type'] = "Feature"
@@ -33,7 +33,13 @@ def get_instance_json(di, avoid_geo = False):
         jdia['data_type'] = attribute.attribute.data_type.name
         jdia['is_base'] = attribute.attribute.data_type.is_base        
         jdia['data_type_id'] = attribute.attribute.data_type.id
-        jdia['value'] = attribute.value
+        if flatten and attribute.attribute.data_type.is_base == False:
+            try:
+                jdia['value'] = get_instance_json_id(int(attribute.value))
+            except:
+                jdia['value'] = attribute.value
+        else:
+            jdia['value'] = attribute.value
         jdi['properties'][jdia['name']] = jdia
     return jdi
 
@@ -86,15 +92,15 @@ def get_visible_models():
 
 def get_visible_instances(BB, offset, mmax):
     dis = {}
-    dis['type']="FeatureCollection"
+    dis['type']="FeatureCollection" 
     dis["features"] = []
     if BB is None:
         queryset = DataInstance.objects.filter(geometry__isnull=False)| DataInstance.objects.filter(mgeometry__isnull=False)
     else:
         bbox = Polygon.from_bbox(BB)
         print bbox
-        queryset = DataInstance.objects.filter(geometry__isnull=False)| DataInstance.objects.filter(mgeometry__isnull=False)
-    #    queryset = DataInstance.objects.filter(geometry__isnull=False, geometry__contains=bbox)| DataInstance.objects.filter(mgeometry__isnull=False, mgeometry__contains=bbox)
+        #   queryset = DataInstance.objects.filter(geometry__isnull=False)| DataInstance.objects.filter(mgeometry__isnull=False)
+        queryset = DataInstance.objects.filter(geometry__isnull=False, geometry__contained=bbox)| DataInstance.objects.filter(mgeometry__isnull=False, mgeometry__contained=bbox)
     
         
     
@@ -110,6 +116,23 @@ def http_get_all_instances(request):
     for di in DataInstance.objects.all()[offset:offset+mmax]:
         dis.append(get_instance_json(di, True))
     return HttpResponse(json.dumps(dis))
+
+
+def http_get_typed_instances(request):
+    type = request.REQUEST.get('type', None)
+    if type is None:
+        return HttpResponse(json.dumps("[]"))
+    lon = request.REQUEST.get('lon', None)
+    if lon is None:
+        return HttpResponse(json.dumps("[]"))
+    lat = request.REQUEST.get('lat', None)
+    if lat is None:
+        return HttpResponse(json.dumps("[]"))
+    p = Point(float(lon),float(lat))
+    dis = []
+    for di in DataInstance.objects.filter(data_type__id=type, geometry__distance_lte = (p, D(km=0.2)) )|DataInstance.objects.filter(data_type__id=type, mgeometry__distance_lte=(p, D(km=0.2))):
+        dis.append(get_instance_json(di, False, True))
+    return HttpResponse(json.dumps(dis), content_type="text/json")
     
     
 def store(request, id):
@@ -126,7 +149,7 @@ def http_get_visible_models(request):
     return HttpResponse(json.dumps(get_visible_models()), content_type="text/json")
 
 def http_get_visible_instances(request):
-    mmax = min(400, int(request.REQUEST.get('m', "400")))
+    mmax = min(400, int(request.REQUEST.get('m', "800")))
     offset = min(0, int(request.REQUEST.get('o', "0")))
     BB = request.REQUEST.get("BB", None)
     if BB is not None:

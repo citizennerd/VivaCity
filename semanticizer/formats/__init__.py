@@ -1,9 +1,55 @@
 from abc import *
+import os
 import tempfile
 from distutils.file_util import write_file
 import urllib2
 
 from django.utils import importlib
+
+class BaseFormatter(object):
+    __metaclass__ = ABCMeta
+    
+    def __init__(self):
+        self.configuration=None
+    
+    def set_configuration(self, config):
+        self.configuration = config
+        
+    def get_file(self, url):
+        response = urllib2.urlopen(url)
+        return response.read()        
+    
+    @abstractmethod
+    def extract_columns(self, file):
+        return []
+   
+    @abstractmethod
+    def to_dict(self, file, transformation):
+        return {}
+    
+    def is_geo(self):
+        return False
+    
+    def is_api(self):
+        return False
+    
+    def is_live(self):
+        return False
+
+def lowercase_rename( dir ):
+    # renames all subforders of dir, not including dir itself
+    def rename_all( root, items):
+        for name in items:
+            try:
+                os.rename( os.path.join(root, name), 
+                                    os.path.join(root, name.lower()))
+            except OSError:
+                pass # can't rename it, so what
+
+    # starts from the bottom so paths further up remain valid after renaming
+    for root, dirs, files in os.walk( dir, topdown=False ):
+        rename_all( root, dirs )
+        rename_all( root, files)
 
 def get_adapter(name):
     package = "semanticizer.formats."+name
@@ -16,20 +62,6 @@ def get_adapter(name):
     return getattr(module, klass)
  
 
-class BaseFormatter(object):
-    __metaclass__ = ABCMeta
-    
-    def get_file(self, url):
-        response = urllib2.urlopen(url)
-        return response.read()        
-    
-    @abstractmethod
-    def extract_columns(self, file, **kwargs):
-        return []
-   
-    @abstractmethod
-    def to_dict(self, file, transformation):
-        return {}
 
 def multi_split(s, seps):
     res = [s]

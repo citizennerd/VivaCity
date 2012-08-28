@@ -16,6 +16,9 @@ urlpatterns = patterns('',
     url(r'^data/instances/visible$', 'postdoc.views.http_get_visible_instances'),
     url(r'^data/instances/all$', 'postdoc.views.http_get_all_instances'),
     
+    url(r'^data/instances/type$', 'postdoc.views.http_get_typed_instances'),
+    
+    
     url(r'^data/models/(?P<id>\d+)$', 'postdoc.views.http_get_data'),
     url(r'^data/models/visible$', 'postdoc.views.http_get_visible_models'),
     

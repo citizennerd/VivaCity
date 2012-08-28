@@ -6,16 +6,16 @@ import StringIO
 import json
 
 class Formatter(BaseFormatter):
-    def extract_columns(self, url, **kwargs):
+    def extract_columns(self, url):
         file = self.get_file(url)
-        splitter = kwargs['splitter'] if "splitter" in kwargs else ","
+        splitter = self.configuration['splitter'] if self.configuration is not None else base_config['splitter']
         f = StringIO.StringIO(file)
         reader = csv.reader(f, delimiter=splitter)        
         return reader.next()
     
     def to_dict(self, url, transformation, **kwargs):
         file = self.get_file(url)
-        splitter = kwargs['splitter'] if "splitter" in kwargs else ","
+        splitter = self.configuration['splitter'] if self.configuration is not None else base_config['splitter']
         print transformation
         geo = True
         selected_cols = transformation.keys()
@@ -63,5 +63,6 @@ class Formatter(BaseFormatter):
                         rr[trans['target']] = {'value':do_transformation(row[i], trans['op']), 'via':trans['via']}
             js.append(rr)
             
-        return js
+        return js, None
                 
+base_config = {'splitter':','}

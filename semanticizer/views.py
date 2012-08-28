@@ -29,6 +29,8 @@ def do_fetch_data(ds):
     ss = {
           'file':ds.file,
           'format':ds.format.name,
+          'format_config_base':ds.format.configuration_requirements,
+          'format_config_spec':ds.format_configuration,
           'semantics':[]
             }
     transform = {}
@@ -59,9 +61,10 @@ def do_fetch_data(ds):
             tsc['data_model'] = semantic.data_model.name
             tsc['data_model_id'] = semantic.data_model.id
             transform[spec.column].append(tsc)
-    data = fmat.to_dict(ds.file, transform)
+    data, a = fmat.to_dict(ds.file, transform) 
     meta['data'] = data
     meta['dataset'] = ss    
+    meta['additional'] = a if a is not None else ""
     return meta
     
 
