@@ -13,6 +13,7 @@
 			body {
 				margin: 0 0 0 0;
 				font-family: 'Josefin Sans', sans-serif;
+				overflow:hidden;
 			}
 			header {
 				height: 50px;
@@ -60,6 +61,9 @@
 
 			#map {
 				width: 100%;
+				left:35px;
+				top:50px;
+				position:absolute;
 			}
 			#nav_ctrl{
 				position:absolute;
@@ -67,7 +71,7 @@
 				height:150px;
 				background-color:#bcd;
 				bottom:16px;
-				left:0px;
+				left:35px;
 			}
 			#btm_ctrl{
 				position:absolute;
@@ -75,12 +79,12 @@
 				height:150px;
 				background-color:#bcd;
 				bottom:16px;
-				left: 175px;
+				left: 210px;
 				font-family:calibri, arial, helvetica, sans-serif;
 				font-size:small;
 			}
 				
-				
+				/*
 			#int_ctrl{
 				position:absolute;
 				width:5px;
@@ -113,6 +117,7 @@
 				margin-top:50px;
 				background-color:red;
 			}
+			*/
 			.hide_btn{
 				position:absolute;
 				width:25px;
@@ -209,10 +214,6 @@
 				float:right;
 			}
 			
-			.selected{
-				border-right:5px solid red;
-			}
-			
 			#search{
 				
 			}
@@ -232,6 +233,35 @@
 				display: list-item;
 				list-style:circle;				
 			}
+			nav{
+				width:35px;
+				background-color:#ddf;
+			}
+			.btn{
+				display:block;
+				height:35px;
+				
+			}
+			.btn:hover{
+				background-color:#bbf;
+			}
+			.btn.selected{
+				
+				background-color:#99f;
+			}
+			.btn.erg{
+				background-color:#f00;
+			}
+			.btn.erg:hover{
+				background-color:#b22;
+			}
+			.btn.erg.selected{
+				background-color:#933;
+			}
+			.menu{
+				position:relative;
+				left:35px;
+			}
 		</style>
 		<script>
 			VC = {};
@@ -250,7 +280,8 @@
 			
 			VC.refresh = function() {
 				$('#map').height($(window).height() - $('header').height() - $('footer').height() - 1);
-				$('#int_ctrl').height($(window).height()-$('header').height()-$('footer').height()-$('#nav_ctrl').height()-1);
+				$('#map').width($(window).width() - $('nav').width());
+				$('nav').height($(window).height()-$('header').height()-$('footer').height()-1);
 			}
 			
 			
@@ -323,7 +354,7 @@
 			$('.btn').live('click', function(e){
 				if ($(this).hasClass('selected')){
 					
-						$(this).children('.btn').hide();
+						$(this).children('.menu').hide();
 						$(this).removeClass('selected');
 				}else{
 					if ($(this).parent().hasClass('btn') && $(this).parent().hasClass('selected')){
@@ -342,7 +373,7 @@
 						if ($(this).data('show')){
 							alert($(this).data('show'));
 						}
-						$(this).children('.btn').show();
+						$(this).children('.menu').show();
 						$(this).addClass('selected');
 					}
 				}
@@ -397,7 +428,7 @@
             });
 
 			$(function() {
-				$('.btn .btn').hide();
+				$('.menu').hide();
 				
 				VC.refresh();
 				$(window).hashchange();
@@ -481,16 +512,34 @@
 		<header>
 			<span class="main_title">VivaCity</span><span class="area_title"> </span><span class="uth">Under the hood</span>
 		</header>
+		
 		<div id="content" style="z-index:0;">
 			<div id="map" style="z-index:0;">
 	
 			</div>
-			<div id="int_ctrl" class="cmd_bar">
+			
+			<div id="nav_ctrl" class="cmd_bar">
+				<div id="hide_btm" class="hide_btn"></div> 
+				<!--<div id="hide_int" class="hide_btn"></div>-->
+				
+				<div id="op_zoom_in"></div>
+				<div id="op_zoom_out"></div>
+				<div id="op_e"></div>
+				<div id="op_n"></div>
+				<div id="op_s"></div>
+				<div id="op_w"></div> 
+			</div>
+			<div id="btm_ctrl" class="cmd_bar"> </div>
+			<div id="hide_all" class="hide_btn"></div> 
+		</div>
+		<nav id="int_ctrl" class="">
 				<div id="env" class="btn">
 					<span>Env</span>
+					<div class="menu">
 					<div id="" class="btn"><span>Trees</span></div>
 					<div id="" class="btn"><span>Water</span></div>
 					<div id="" class="btn"><span>Pollution</span></div>
+					</div>
 				</div> 
 				<div id="tra" class="btn"> 
 					<span>Transport</span>
@@ -525,21 +574,7 @@
 					<div id="" class="btn erg"> Vulcanic Eruptions </div>
 					<div id="" class="btn"> Civil Protection </div> 
 				</div> 
-			</div>
-			<div id="nav_ctrl" class="cmd_bar">
-				<div id="hide_btm" class="hide_btn"></div> 
-				<div id="hide_int" class="hide_btn"></div>
-				
-				<div id="op_zoom_in"></div>
-				<div id="op_zoom_out"></div>
-				<div id="op_e"></div>
-				<div id="op_n"></div>
-				<div id="op_s"></div>
-				<div id="op_w"></div> 
-			</div>
-			<div id="btm_ctrl" class="cmd_bar"> </div>
-			<div id="hide_all" class="hide_btn"></div> 
-		</div>
+			</nav>
 		<footer>
 			&copy; 2012 MMo.IT
 		</footer>
