@@ -69,7 +69,7 @@
 				position:absolute;
 				width:150px;
 				height:150px;
-				background-color:#bcd;
+				background-color:#ddf;
 				bottom:16px;
 				left:35px;
 			}
@@ -77,7 +77,7 @@
 				position:absolute;
 				width:600px;
 				height:150px;
-				background-color:#bcd;
+				background-color:#ddf;
 				bottom:16px;
 				left: 210px;
 				font-family:calibri, arial, helvetica, sans-serif;
@@ -122,11 +122,11 @@
 				position:absolute;
 				width:25px;
 				height:25px;
-				background-color:#bcd;
+				background-color:#ddf;
 			}
 			#hide_all{
 				
-				left:0;
+				left:3px;
 				bottom: 16px;
 				z-index:10001;
 				background-image:url(/static/img/x.png);
@@ -146,7 +146,7 @@
 				width:25px;
 				height:25px;
 				position:absolute;
-				background-color:#bcd;
+				background-color:#ddf;
 				bottom:75px;
 				left:62px;
 				background-image:url(/static/img/plus.png);
@@ -155,7 +155,7 @@
 				width:25px;
 				height:25px;
 				position:absolute;
-				background-color:#bcd;
+				background-color:#ddf;
 				bottom:50px;
 				left:62px;
 				background-image:url(/static/img/minus.png);
@@ -164,7 +164,7 @@
 				width:25px;
 				height:50px;
 				position:absolute;
-				background-color:#bcd;
+				background-color:#ddf;
 				bottom:50px;
 				left:100px;
 				background-image:url(/static/img/e.png);
@@ -174,7 +174,7 @@
 				width:25px;
 				height:50px;
 				position:absolute;
-				background-color:#bcd;
+				background-color:#ddf;
 				bottom:50px;
 				left:25px;
 				background-image:url(/static/img/w.png);
@@ -184,7 +184,7 @@
 				width:50px;
 				height:25px;
 				position:absolute;
-				background-color:#bcd;
+				background-color:#ddf;
 				bottom:100px;
 				left:50px;
 				background-image:url(/static/img/n.png);
@@ -194,7 +194,7 @@
 				width:50px;
 				height:25px;
 				position:absolute;
-				background-color:#bcd;
+				background-color:#ddf;
 				bottom:25px;
 				left:50px;
 				background-image:url(/static/img/s.png);
@@ -255,12 +255,12 @@
 			.btn.erg:hover{
 				background-color:#b22;
 			}
-			.btn.erg.selected{
-				background-color:#933;
-			}
-			.menu{
+			.selected .menu{
 				position:relative;
-				left:35px;
+				background-color:#ddf;
+				margin-left:35px;
+				width:35px;
+				
 			}
 		</style>
 		<script>
@@ -357,19 +357,25 @@
 						$(this).children('.menu').hide();
 						$(this).removeClass('selected');
 				}else{
-					if ($(this).parent().hasClass('btn') && $(this).parent().hasClass('selected')){
+					
+					
+					if ($(this).parent().parent().hasClass('btn') && $(this).parent().parent().hasClass('selected')){
 						
 						$(this).siblings().removeClass('selected');
-						$(this).siblings().children('.btn').hide();
+						$(this).siblings().children('.menu').hide();
 						
 						$(this).addClass('selected');
 						if ($(this).data('show')){
 							alert($(this).data('show'));
 						}
-						$(this).children('.btn').show();
+						$(this).children('.menu').show();
 					} else{
+						
+						$('.selected').children('.menu').hide();
+						$('.selected').removeClass('selected');
+						
 						$('.btn').removeClass('selected');
-						$('.btn .btn').hide();				
+						$('.menu').hide();
 						if ($(this).data('show')){
 							alert($(this).data('show'));
 						}
@@ -534,45 +540,55 @@
 		</div>
 		<nav id="int_ctrl" class="">
 				<div id="env" class="btn">
-					<span>Env</span>
+					<span>d</span>
 					<div class="menu">
-					<div id="" class="btn"><span>Trees</span></div>
-					<div id="" class="btn"><span>Water</span></div>
-					<div id="" class="btn"><span>Pollution</span></div>
+						<div id="" class="btn"><span>a</span></div>
+						<div id="" class="btn"><span>b</span></div>
+						<div id="" class="btn"><span>c</span></div>
 					</div>
 				</div> 
 				<div id="tra" class="btn"> 
-					<span>Transport</span>
-					<div id="" class="btn"><span>Traffic</span></div>
-					<div id="" class="btn"><span>Trains</span></div>
-					<div id="" class="btn"><span>Bus</span></div>
-					<div id="" class="btn"><span>Metro</span></div>
-					<div id="" class="btn"><span>Ship</span></div>
-					<div id="" class="btn"><span>Plane</span></div>
-					<div id="" class="btn"><span>Taxi</span></div>
+					<span>e</span>
+					<div class="menu">
+						<div id="" class="btn"><span>f</span></div>
+						<div id="" class="btn"><span>g</span></div>
+						<div id="" class="btn"><span>h</span></div>
+						<div id="" class="btn"><span>i</span></div>
+						<div id="" class="btn"><span>j</span></div>
+						<div id="" class="btn"><span>k</span></div>
+						<div id="" class="btn"><span>l</span></div>
+					</div>
 				</div> 
 				<div id="eco" class="btn">
-					<span>Eco</span>
-					<div id="" class="btn"><span>Planning</span></div>
-					<div id="" class="btn"><span>Licenses</span></div>
-					<div id="" class="btn"><span>Inspections</span></div>
+					<span>p</span>
+					<div class="menu">
+					<div id="" class="btn"><span>m</span></div>
+					<div id="" class="btn"><span>n</span></div>
+					<div id="" class="btn"><span>o</span></div>
+					</div>
 				</div> 
 				
 				<div id="" class="btn">
-					<span>Culture</span>
-					<div id="" class="btn"><span>Events</span></div>
-					<div id="" class="btn"> <span>Museums</span></div>
-					<div id="" class="btn">
-						<span>Education</span>
-						<div id="" class="btn"><span>Schools</span> </div>
-						<div id="" class="btn"><span>Workforce</span> </div>
-						<div id="" class="btn"> <span>Daycare</span></div> 
+					<span>q</span>
+					<div class="menu">
+						<div id="" class="btn"><span>r</span></div>
+						<div id="" class="btn"> <span>s</span></div>
+						<div id="" class="btn">
+							<span>t</span>
+							<div class="menu">
+								<div id="" class="btn"><span>u</span> </div>
+								<div id="" class="btn"><span>w</span> </div>
+								<div id="" class="btn"> <span>v</span></div> 
+							</div>
+						</div>
 					</div>
 				</div> 
-				<div id="as" class="btn erg"> <span>Crisis</span>
-					<div id="" class="btn erg"> Quakes </div>
-					<div id="" class="btn erg"> Vulcanic Eruptions </div>
-					<div id="" class="btn"> Civil Protection </div> 
+				<div id="as" class="btn erg"> <span>!</span>
+					<div class="menu">
+					<div id="" class="btn erg"> Q </div>
+					<div id="" class="btn erg"> V </div>
+					<div id="" class="btn"> C </div> 
+							</div>
 				</div> 
 			</nav>
 		<footer>
