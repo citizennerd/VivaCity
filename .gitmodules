@@ -1,0 +1,3 @@
+[submodule "VivaCity/static/font"]
+	path = VivaCity/static/font
+	url = git@github.com:citizennerd/Society-Webfont.git
