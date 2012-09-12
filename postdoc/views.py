@@ -156,3 +156,16 @@ def http_get_visible_instances(request):
         BB = [float(bb) for bb in BB.split(",")]
     return HttpResponse(json.dumps(get_visible_instances(BB,offset,mmax)), content_type="text/json")
 
+def do_get_tags(request):
+    return HttpResponse(json.dumps(get_tags(DataTags.objects.filter(super__isnull=True))))
+
+def get_tags(container):
+    menu = []
+    for tag in container.all(): 
+        menu.append({
+                     'name':tag.name,
+                     'id':tag.id,
+                     'description':tag.description,
+                     'children':get_tags(tag.subtags) 
+                     })
+    return menu
