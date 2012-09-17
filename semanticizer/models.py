@@ -11,12 +11,25 @@ class DataSetFormat(models.Model):
     is_api = models.BooleanField(default=False)
     def __str__(self):
         return self.name    
+
+class DSFAlias(models.Model):
+	name = models.CharField(max_length=255, unique=True)
+	dsf = models.ForeignKey(DataSetFormat)
+	def __str__(self):
+		return "%s => %s" % (self.name, self.dsf)
+
+def create_dataset(structure):
+	ds = DataSet()
+	file = structure['url']
+	if structure['format'] != "" and DSFAlias.objects.filter(name = structure['format']).count() > 0:
+		format = DSFAlias.objects.get(name=structure['format'])
     
 class DataSet(models.Model):
     file = models.URLField()
-    format = models.ForeignKey(DataSetFormat)
-    format_configuration = models.TextField()
+    format = models.ForeignKey(DataSetFormat, null=True, blank=True)
+    format_configuration = models.TextField(null=True, blank=True)
     refresh_period = models.TextField(blank = True, null=True)
+
     def __str__(self):
         return self.file    
     

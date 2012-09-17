@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     
     'postdoc',
     'semanticizer',
+    'scribe',
 )
 
 # A sample logging configuration. The only tangible logging
