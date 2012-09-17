@@ -54,6 +54,10 @@ Semanticizer is the connector to the outer world. It enables a semantic translat
 
 If the data is very de-structured, it could be necessary to connect the core of the information with elements that are a few logic steps away. For this reason it is possible to define semantic paths to create simple "model graphs" that the importer will respect and recreate in the system
 
+### Scribe
+
+Scribe is the connector to che various Data Management Systems in the open source world: already implemented there are CKAN and Socrata APIs, but it is possible to add new ones at will.
+
 ### VivaCity
 
 Vivacity takes the SimCity experience on simulated worlds and brings the best of it to be used in a new open-data based approach. Every information is explorable, everything can be drilled-down/drilled-across.
