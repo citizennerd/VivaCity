@@ -20,7 +20,3 @@ def proxy(request, path):
         response, content = conn.request(url, request.method, data)
     return HttpResponse(content, status = int(response['status']), mimetype = response['content-type'])
     
-def get_google_places(request, BB, types):
-    return None
-
-

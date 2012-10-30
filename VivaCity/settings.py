@@ -13,6 +13,8 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+MONGO_IP = "85.25.139.18"
+
 DATABASES = {
     'default': {
         #'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.

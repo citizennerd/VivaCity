@@ -1,7 +1,9 @@
 from django.db import models
 
 from postdoc.models import *
-from semanticizer.formats import * 
+from semanticizer.formats import *
+
+from django.contrib.auth.models import User 
 
 class DataSetFormat(models.Model):
     name = models.CharField(max_length=30)
@@ -9,6 +11,8 @@ class DataSetFormat(models.Model):
     geographic = models.BooleanField()
     configuration_requirements = models.TextField()
     is_api = models.BooleanField(default=False)
+    time_explicit = models.BooleanField()
+    time_implicit = models.BooleanField()
     def __str__(self):
         return self.name    
 
@@ -25,11 +29,14 @@ def create_dataset(structure):
 		format = DSFAlias.objects.get(name=structure['format'])
     
 class DataSet(models.Model):
+    owner = models.ForeignKey(User)
     file = models.URLField()
     format = models.ForeignKey(DataSetFormat, null=True, blank=True)
     format_configuration = models.TextField(null=True, blank=True)
     refresh_period = models.TextField(blank = True, null=True)
-
+    private = models.BooleanField(default=False)
+    publication_aggregation = models.TextField()
+    
     def __str__(self):
         return self.file    
     
@@ -99,4 +106,19 @@ class GeoSemanticsSpecification(models.Model):
     is_geo_y = models.BooleanField()    
     geocode_address = models.BooleanField()
     data_transformation = models.CharField(max_length=200)
+    
+class TimeSpanType(models.Model):
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
+    
+class TimeSemanticsSpecification(models.Model):
+    semantics = models.ForeignKey(Semantics, related_name="time_associations")
+    absolute_value = models.DateTimeField(blank=True, null=True)
+    column = models.CharField(max_length=500,blank = True, null=True)
+    format = models.CharField(max_length=200)
+    data_transformation = models.CharField(max_length=200)
+    timespan_type = models.ForeignKey(TimeSpanType)
+    
+    
     

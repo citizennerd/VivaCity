@@ -2,11 +2,14 @@
 <html>
 	<head>
 		<title> VivaCity </title>
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+		<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+		<script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
 		<script src="https://github.com/andyet/ICanHaz.js/raw/master/ICanHaz.min.js"></script>
 		<script src="/static/js/OpenLayers.js"></script>
 		<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
 		<script src="https://raw.github.com/cowboy/jquery-hashchange/v1.3/jquery.ba-hashchange.js"></script>
+		<script src="http://www.datejs.com/build/date.js"> </script>
+		<style>@import url(http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css);</style>
 		<style>
 			@import url(/static/css/theme/default/style.css);
 			@import url(http://fonts.googleapis.com/css?family=Josefin+Sans:700);
@@ -62,7 +65,7 @@
 			#map {
 				width: 100%;
 				left:35px;
-				top:50px;
+				top:75px;
 				position:absolute;
 			}
 			#nav_ctrl{
@@ -262,6 +265,19 @@
 				width:35px;
 				
 			}
+			
+			#tl_container{
+				height:25px;
+				width:100%;
+				background-color: darkgray;
+			}
+			
+			#timeline{
+				width:75%;
+				margin-left:auto;
+				margin-right:auto;
+				top:5px;
+			}
 		</style>
 		<script>
 			VC = {};
@@ -279,7 +295,7 @@
 
 			
 			VC.refresh = function() {
-				$('#map').height($(window).height() - $('header').height() - $('footer').height() - 1);
+				$('#map').height($(window).height() - $('header').height() - $('footer').height() - $('#timeline').height() - 1);
 				$('#map').width($(window).width() - $('nav').width());
 				$('nav').height($(window).height()-$('header').height()-$('footer').height()-1);
 			}
@@ -305,7 +321,7 @@
 				}
 			});
 			VC.showing = true;
-			$('#hide_all').live('click', function(){
+			$(document).on('click', '#hide_all', function(){
 				if (VC.showing){
 					$('.cmd_bar').hide();
 					VC.showing = false;
@@ -316,42 +332,42 @@
 				}
 			});
 			
-			$('#hide_int').live('click', function(){
+			$(document).on('click', '#hide_int', function(){
 				$('#int_ctrl').toggle();
 			});
 			
-			$('.uth').live('click', function(){
+			$(document).on('click', '.uth', function(){
 				window.location = "/uth";
 			});
 			
-			$('#hide_btm').live('click', function(){
+			$(document).on('click', '#hide_btm', function(){
 				$('#btm_ctrl').toggle();
 			});
 			
-			$('#op_zoom_in').live('click', function(){
+			$(document).on('click', '#op_zoom_in', function(){
 				VC.map.zoomIn();
 			});
 			
-			$('#op_zoom_out').live('click', function(){
+			$(document).on('click', '#op_zoom_out', function(){
 				VC.map.zoomOut();
 			});
-			$('#op_e').live('click', function(){
+			$(document).on('click', '#op_e', function(){
 				VC.map.pan(100,0);
 			});
 			
-			$('#op_w').live('click', function(){
+			$(document).on('click', '#op_w', function(){
 				VC.map.pan(-100,0);
 			});
 			
-			$('#op_n').live('click', function(){
+			$(document).on('click', '#op_n', function(){
 				VC.map.pan(0,-100);
 			});
-			$('#op_s').live('click', function(){
+			$(document).on('click', '#op_s', function(){
 				VC.map.pan(0,100);
 			});
 			
 
-			$('.btn').live('click', function(e){
+			$(document).on('click', '.btn', function(e){
 				if ($(this).hasClass('selected')){
 					
 						$(this).children('.menu').hide();
@@ -387,14 +403,14 @@
 				return false;
 			});
 			
-			$('.area_title').live('click', function(){
+			$(document).on('click', '.area_title', function(){
 				var qloc = $(this).text();
 				var p = $(this).parent()
 				$(this).remove();
 				$('header').append('<input type="text" id="search"></input>').focus();
 				
 			});
-			$('#search').live('keypress', function(event){
+			$(document).on('keypress', '#search', function(event){
 				if( event.which == 13 ){
 					oloc = location.hash.split(';')[0].split(':')[1];
 					lloc = $(this).val();
@@ -432,12 +448,33 @@
                     graphicZIndex: 2
                 })
             });
-
+            
+            $('#timeline .ui-slider-handle').live('mouseenter', function(){
+            	val = $('#timeline').slider( "option", "value" );
+            	$(this).attr('title', val);
+            });
+            
 			$(function() {
 				$('.menu').hide();
 				
 				VC.refresh();
 				$(window).hashchange();
+				
+				$('#timeline').slider({value:100});
+				
+				$( document ).tooltip({
+            position: {
+                my: "center top",
+                at: "center bottom",
+            },
+            show: {
+                duration: "fast"
+            },
+            hide: {
+                effect: "hide"
+            }
+        });
+				
 				VC.map = new OpenLayers.Map('map', {
 					controls : [],
 					theme:null,
@@ -518,6 +555,9 @@
 		<header>
 			<span class="main_title">VivaCity</span><span class="area_title"> </span><span class="uth">Under the hood</span>
 		</header>
+		<div id="tl_container">
+			<div id="timeline"> </div>
+		</div>
 		
 		<div id="content" style="z-index:0;">
 			<div id="map" style="z-index:0;">

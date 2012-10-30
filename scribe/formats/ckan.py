@@ -3,31 +3,26 @@ import os
 import tempfile
 from distutils.file_util import write_file
 import urllib2
-
+from scribe.formats import BaseDMS
 from django.utils import importlib
+import json
 
-class BaseDMS(object):
-	__metaclass__ = ABCMeta
+#ckan format
 
-	@abstractmethod
+class DMSFormat(object):
+	def __init__(self, base_url):
+		self.base_url = base_url
+
 	def get_datasets(self):
-		return []
+		url = self.base_url + "/api/rest/dataset"
+		data = urllib2.urlopen(url).read()
+		return json.loads(data)
 
-	@abstractmethod
 	def get_dataset(self, dataset_id):
-		return {}
+		url = self.base_url + "/api/rest/dataset/"+dataset_id
+		data = urllib2.urlopen(url).read()
+		data = json.loads(data)
 
-	def to_semanticizer(self, filter=[]):
-		if len(filter) == 0:
-			for dataset in self.get_datasets():
-				d = self.get_dataset(dataset)
-				create_dataset(d)
-def get_adapter(name):
-    package = "scribe.formats."+name
-    klass = "Formatter"
+		return data
+		
 
-    # dynamically import the module, in this case app.backends.adapter_a
-    module = importlib.import_module(package)
-
-    # pull the class off the module and return
-    return getattr(module, klass)	

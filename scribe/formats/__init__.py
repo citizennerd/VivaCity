@@ -15,7 +15,11 @@ class BaseDMS(object):
 
 	@abstractmethod
 	def get_dataset(self, dataset_id):
-		return {}
+		return {
+			'url':'',
+			'format':'',
+			'name':''
+		}
 
 	def to_semanticizer(self, filter=[]):
 		if len(filter) == 0:

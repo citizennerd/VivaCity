@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.shortcuts import render_to_response
 
 from postdoc.models import *
 from postdoc.ops import do_store
@@ -102,7 +103,6 @@ def get_visible_instances(BB, offset, mmax):
         #   queryset = DataInstance.objects.filter(geometry__isnull=False)| DataInstance.objects.filter(mgeometry__isnull=False)
         queryset = DataInstance.objects.filter(geometry__isnull=False, geometry__contained=bbox)| DataInstance.objects.filter(mgeometry__isnull=False, mgeometry__contained=bbox)
     
-        
     
     for di in queryset[offset:offset+mmax]:
         dis["features"].append(get_instance_json(di))
@@ -169,3 +169,40 @@ def get_tags(container):
                      'children':get_tags(tag.subtags) 
                      })
     return menu
+
+
+def get_models(request):
+    nodes = []
+    edges = []
+    for model in DataModel.objects.filter(is_base=False):
+        nodes.append({
+                      "id":model.id,
+                      'name':model.name,
+                      'super':str(model.super),
+                      'geo_representation':model.geo_representation,
+                      'container':str(model.container),
+                      'concept':str(model.concept),
+                      'attributes':[{'n':att.name, 't':str(att.data_type),'t_id':att.data_type.id} for att in model.attributes.all()]
+                      })
+        if model.super is not None:
+            edges.append({
+                          'from':model.id,
+                          'to':model.super.id,
+                          'type':"extends"})
+        if model.container is not None:
+            edges.append({
+                          'from':model.id,
+                          'to':model.container.id,
+                          'type':"contained_in"})
+        for att in model.attributes.all():
+            edges.append({
+                          'from':att.model.id,
+                          'to':att.data_type.id,
+                          'type':"attribute",
+                          'attribute':att.name})
+            
+    return HttpResponse(json.dumps({'nodes':nodes, 'edges':edges}))
+
+    
+def models_index(request):
+    return render_to_response('modeler.html')

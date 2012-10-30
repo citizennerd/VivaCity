@@ -6,6 +6,8 @@ class SemanticsSpecificationInline(admin.TabularInline):
     
 class GeoSemanticsSpecificationInline(admin.TabularInline):
     model = GeoSemanticsSpecification
+class TimeSemanticsSpecificationInline(admin.TabularInline):
+    model = TimeSemanticsSpecification
 
 class SemanticsInLine(admin.StackedInline):
     model = Semantics
@@ -27,7 +29,8 @@ class SemanticsAdmin(admin.ModelAdmin):
     model = Semantics
     inlines = [
         SemanticsSpecificationInline,
-        GeoSemanticsSpecificationInline
+        GeoSemanticsSpecificationInline,
+        TimeSemanticsSpecificationInline
     ]
     
 

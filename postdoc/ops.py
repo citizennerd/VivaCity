@@ -41,6 +41,8 @@ def set_attribute(instance, attribute, value, depth=0,prefer_ids = []):
 #        dms = DataModel.objects.filter(is_base=False, id__in=[i.data_type.id for i in instance.data_type.all_attributes])
     return merge_proposals, prefer_ids_inner
 
+
+#mongo-ize
 def do_store(data):
     dataset = data['dataset']
     data = data['data']

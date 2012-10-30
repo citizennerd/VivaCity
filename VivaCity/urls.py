@@ -21,15 +21,15 @@ urlpatterns = patterns('',
     
     url(r'^data/models/(?P<id>\d+)$', 'postdoc.views.http_get_data'),
     url(r'^data/models/visible$', 'postdoc.views.http_get_visible_models'),
+    url(r'^data/models.json$', 'postdoc.views.get_models'),
+    url(r'^data/models/viewer$', 'postdoc.views.models_index'),
     
     url(r'^data/import/(?P<id>\d+)$', 'postdoc.views.store'),
 
     #semantics urls
     url(r'^semantics/fetch/(?P<id>\d+)$', 'semanticizer.views.fetch_data', name="fetch"),
-    url(r'^semantics/add/step_1$', 'semanticizer.views.step_1', name="step_1"),
-    url(r'^semantics/add/step_2$', 'semanticizer.views.step_2', name="step_2"),
-    url(r'^semantics/add/step_3$', 'semanticizer.views.step_3', name="step_3"),
-
+    url(r'^semantics/datasets.json$', 'semanticizer.views.get_datasets', name="step_1"),
+    
     #admin (cuz we all luv dj)!!!
     url(r'^admin/', include(admin.site.urls)),
 

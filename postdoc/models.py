@@ -7,7 +7,9 @@ class DataModel(models.Model):
     is_base = models.BooleanField(default=False)
     geo_representation = models.CharField(max_length=100, blank=True, null=True)
     container = models.ForeignKey('DataModel', blank=True, null=True, related_name="contains")
-    concept = models.BooleanField(default=False)
+    #concept = models.BooleanField(default=False)
+    
+    
     def __str__(self):
         return self.name
     def hierarchy(self):
@@ -52,7 +54,8 @@ class DataModelAttribute(models.Model):
     
 class DataInstance(models.Model):
     data_type = models.ForeignKey(DataModel, related_name = "instances")
-    
+    valid_from = models.DateTimeField()
+    valid_to = models.DateTimeField()
     geometry = models.GeometryCollectionField(null=True, blank=True)
     mgeometry = models.GeometryField(null=True, blank=True)
     objects = models.GeoManager()

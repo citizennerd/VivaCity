@@ -68,52 +68,17 @@ def do_fetch_data(ds):
     return meta
     
 
-def step_1(request):
-    if request.method == "GET":
-        form = DataSetForm()
-        data = {
-            'form':form.as_p(),
-            'url':reverse('step_1')
-        }
-        return HttpResponse(json.dumps(data))
-    else:
-        dataset = DataSetForm(request.POST)
-        dataset.save()
-        form = SemanticsForm()
-        data = {
-            'form':form.as_p(),
-            'url':reverse('step_2')
-        }
-        return HttpResponse(json.dumps(data))
+def get_datasets(request):
+    ret = []
+    for ds in DataSet.objects.all():
+        ret.append({
+                    'file':ds.file,
+                    'format':str(ds.format),                    
+                    'format_configuration':str(ds.format_configuration),
+                    'refresh_period':ds.refresh_period,
+                    'columns':[dsc.name for dsc in ds.columns.all()]
+                            })
+    return HttpResponse(json.dumps(ret))
+
+
     
-def step_2(request):
-    if request.method == "GET":
-        form = SemanticsForm()
-        data = {
-            'form':form.as_p(),
-            'url':reverse('step_2')
-        }
-        return HttpResponse(json.dumps(data))
-    else:
-        dataset = SemanticsForm(request.POST)
-        dataset.save()
-        form = SemanticsSpecificationForm()
-        data = {
-            'form':form.as_p(),
-            'url':reverse('step_3')
-        }
-        return HttpResponse(json.dumps(data))
-    
-def step_3(request):
-    if request.method == "GET":
-        form = SemanticsForm()
-        data = {
-            'form':form.as_p(),
-            'url':reverse('step_3')
-        }
-        return HttpResponse(json.dumps(data))
-    else:
-        dataset = SemanticsForm(request.POST)
-        dataset.save()
-        return HttpResponse("ok")
-        
